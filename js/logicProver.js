@@ -8,12 +8,12 @@
 	var proofList = $('proofList');
 
 
-	function validateInput(prop) {
+	function validateProp(prop) {
 		possValues = ['p', 'q', 'r', 's', 't', 'u', 'v', 'w', '^', '|', '~', '-', '>', '<', '='];
 		prop = prop.split('');
 		//test for odd characters 
 		for (var i=0; i<prop.length;i++){
-			if (jQuery.inArray(prop.[i],possValues) == -1){
+			if (jQuery.inArray(prop[i],possValues) == -1){
 				alert("Please enter a valid proposition using only p, q, r, s, t, u, v, w, ^, |, ~, - >, <, =");
 				return false;
 			}
@@ -56,7 +56,7 @@
 		return tbl;
 	}
 
-	function validateConc{
+	function validateConc(){
 		conc = $('newConcInput');
 		if (validateProp(conc)){
 			$('newConcInput').style.display = "none";
@@ -68,7 +68,7 @@
 
 	function init() {
 		'use strict';
-		$('propForm').onsubmit = addTemps;
+		$('propForm').onsubmit = validateProp;
 		$('concForm').onsubmit = validateConc;		
 	}
 
