@@ -1,0 +1,51 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+	<meta charset="utf-8"> 
+	<title>Logic Prover 1.0 Beta</title>
+	<link rel="stylesheet" type="text/css" href="css/styles.css">
+</head>
+<body>
+	<div id="container">
+		<h1>My Logic Prover 1.0 Beta</h1>
+		<div class="ColumnDiv" id="proofDiv" style="float:left">
+			<div>
+			<fieldset><legend>Locical Proof</legend>
+				<table style="float:right;"><tr><th>Propositions</th><th>Transformation Rules</th></tr></table>
+				<ol id="proofList">
+					<li><table><tr><td>First proposition</td><td>1. Given proposition</td></tr></table></li>
+					<li><table><tr><td>Second proposition</td><td>2. Given proposition</td></tr></table></li>
+					<li><table><tr><td>Third proposition</td><td>3. Given proposition</td></tr></table></li>
+					<li id="conclusionItem" type="A" value="3"><table><tr><td>Conclusion</td><td>4. Conclusion to prove</td></tr></table></li>
+				</ol>		
+			</fieldset>
+			</div>
+		</div>
+		<div class="ColumnDiv" id="propositionsDiv">
+			<form action="#" method="post" id="propForm">
+				<fieldset><legend>Given propositions</legend>		
+				<div>
+					<span>
+						<b>Key:</b> Variables: p, q, r, s, t, u, v, w <br>
+						Operators: ^=and, ||=or, ~=not, ->=if...then, <->=...if and only if...</span><br>
+					<br><input type="text" name="newConcInput" id="newConcInput" size="100">
+					<input type="submit" value="Add Proposition" class="submit" id="submitProp">
+				</div>
+				<div id="outputProps">
+				</div>
+				</fieldset>
+			</form>
+			<form action="#" method="post" id="concForm">
+				<fieldset><legend>Given Conclusion</legend>		
+				<div>
+					<br><input type="text" name="newConcInput" id="newConcInput" size="100">
+					<input type="submit" value="Add Conclusion" class="submit" id="submitConc">
+				</div>
+			</fieldset>
+			</form>
+		</div>
+	</div>
+	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+	<script type="text/javascript" src="js/logicProver.js"></script>
+</body> 
+</html> 
