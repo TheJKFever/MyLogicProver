@@ -1,15 +1,3 @@
-/*
-dark blue: 212B40
-gray-blue: 547B97
-gray-green-blue: BADCDD
-light-green: C2E078
-dark blue: 1B1D26
-dark green: 425955
-gray-green: 778C7A
-off-white: F1F2D8
-tan: BFBD9F
-*/
-
 #container{
 	width: 1080px;
 	margin: 0 auto;
@@ -108,10 +96,17 @@ ol li table tr td{
 	font-weight:bold;
 }
 
-#output {
-	clear:both;
-	margin-bottom: 10px;
-	color: blue;
+#solveForm {
+	display: none;
+}
+
+#solveDiv {
+	display: block;
+	text-align: center;
+}
+
+#submitSolve {
+	float: none;
 }
 
 table{

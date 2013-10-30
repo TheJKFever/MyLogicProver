@@ -3,7 +3,9 @@
 <head> 
 	<meta charset="utf-8"> 
 	<title>Logic Prover 1.0 Beta</title>
-	<link rel="stylesheet" type="text/css" href="/css/style.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script type="text/javascript" src="js/logicProver.js"></script>
 </head>
 <body>
 	<div id="container">
@@ -11,27 +13,27 @@
 		<div class="ColumnDiv" id="proofDiv" style="float:left">
 			<div>
 			<fieldset><legend>Locical Proof</legend>
-				<table style="float:right;"><tr><th>Propositions</th><th>Transformation Rules</th></tr></table>
+				<table style="float:right;"><tr><th>Arguments</th><th>Transformation Rules</th></tr></table>
 				<ol id="proofList">
-					<li><table><tr><td>First proposition</td><td>1. Given proposition</td></tr></table></li>
-					<li><table><tr><td>Second proposition</td><td>2. Given proposition</td></tr></table></li>
-					<li><table><tr><td>Third proposition</td><td>3. Given proposition</td></tr></table></li>
-					<li id="conclusionItem" type="A" value="3"><table><tr><td>Conclusion</td><td>4. Conclusion to prove</td></tr></table></li>
+					<li><table><tr><td>First argument</td><td>1. Given argument</td></tr></table></li>
+					<li><table><tr><td>Second argument</td><td>2. Given argument</td></tr></table></li>
+					<li><table><tr><td>Third argument</td><td>3. Given argument</td></tr></table></li>
+					<li id="conclusionItem" type="A" value="3"><table><tr><td>Conclusion</td><td>4. Given conclusion</td></tr></table></li>
 				</ol>		
 			</fieldset>
 			</div>
 		</div>
-		<div class="ColumnDiv" id="propositionsDiv">
-			<form action="#" method="post" id="propForm">
-				<fieldset><legend>Given propositions</legend>		
+		<div class="ColumnDiv" id="argumentsDiv">
+			<form action="#" method="post" id="argForm">
+				<fieldset><legend>Given Arguments</legend>		
 				<div>
 					<span>
 						<b>Key:</b> Variables: p, q, r, s, t, u, v, w <br>
-						Operators: ^=and, ||=or, ~=not, ->=if...then, <->=...if and only if...</span><br>
-					<br><input type="text" name="newConcInput" id="newConcInput" size="100">
-					<input type="submit" value="Add Proposition" class="submit" id="submitProp">
+						Operators: *=and, |=or, ~=not, >=if...then, ==...if and only if...</span><br>
+					<br><input type="text" name="newArgInput" id="newArgInput" size="100">
+					<input type="submit" value="Add argument" class="submit" id="submitArg">
 				</div>
-				<div id="outputProps">
+				<div id="outputArgs">
 				</div>
 				</fieldset>
 			</form>
@@ -43,9 +45,14 @@
 				</div>
 			</fieldset>
 			</form>
+			<form action="#" method="post" id="solveForm">
+				<fieldset><legend>Solve Logical Proof</legend>
+				<div id="solveDiv">
+					<input type="submit" value="Solve" class="submit" id="submitSolve">
+				</div>
+			</fieldset>
+			</form>
 		</div>
 	</div>
-	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-	<script type="text/javascript" src="/js/logicProver.js"></script>
 </body> 
 </html> 
