@@ -66,13 +66,7 @@ var lockedInFalse = [];
 
     function addProp(testProp) {        
         var prop = (testProp)? testProp : $("newPremInput").value;
-        // var prop;
-        // if (testProp){
-        //     prop = testProp;
-        // } else {
-        //     prop = $("newPremInput").value;
-               $("newPremInput").value = "";            
-        // }
+        $("newPremInput").value = "";            
         console.log("The user entered premise: " + prop);
         var msg = validateProp(prop);
         if (typeof msg === "object") {
@@ -153,10 +147,10 @@ var lockedInFalse = [];
         $("premForm").onsubmit = addProp;
         $("concForm").onsubmit = addConc;
         $("solveForm").onsubmit = solve;
-        addProp("(p>s)|r");
-        addProp("p>q");
-        addProp("q>r");
-        addConc("p>r");
+        // addProp("(p>s)|r");
+        // addProp("p>q");
+        // addProp("q>r");
+        // addConc("p>r");
    }
 
    window.onload = init;
