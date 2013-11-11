@@ -2,14 +2,14 @@
 <html lang="en"> 
 <head> 
 	<meta charset="utf-8"> 
-	<title>Logic Prover 1.0 Beta</title>
+	<title>Logic Prover 1.1 Beta</title>
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	<script type="text/javascript" src="js/logicProver.js"></script>
 </head>
 <body>
 	<div id="container">
-		<h1>My Logic Prover 1.0 Beta</h1>
+		<h1>My Logic Prover 1.1 Beta</h1>
 		<div class="ColumnDiv" id="proofDiv" style="float:left">
 			<div>
 				<fieldset><legend>Logical Proof</legend>
@@ -31,7 +31,7 @@
 							<b>Key:</b> Variables: p, q, r, s, t, u, v, w <br>
 							Operators: *=and, |=or, ~=not, >=if...then, ==...if and only if...<br/></span>
 							<br/>
-							<input type="text" name="newPremInput" id="newPremInput" value="add the given premises here" size="100">
+							<input type="text" name="newPremInput" id="newPremInput" placeholder="add the given premises here" size="100">
 							<input type="submit" value="Add premise" class="submit" id="submitPrem">
 						</div>
 					</fieldset>
@@ -44,7 +44,7 @@
 								<option value="Therefore" selected>Therefore</option>
 								<option value="Equality">Equality</option>
 							</select>
-							<input type="text" name="newConcInput" id="newConcInput" value="add the given conclusion here" size="100">
+							<input type="text" name="newConcInput" id="newConcInput" placeholder="add the given conclusion here" size="100">
 							<input type="submit" value="Add Conclusion" class="submit" id="submitConc">
 						</div>
 					</fieldset>

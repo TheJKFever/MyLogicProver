@@ -65,7 +65,7 @@ var lockedInFalse = [];
     }
 
     function addProp(testProp) {        
-        var prop = (testProp)? testProp : $("newPremInput").value;
+        var prop = (typeof testProp !== "string")? $("newPremInput").value : testProp;
         $("newPremInput").value = "";            
         console.log("The user entered premise: " + prop);
         var msg = validateProp(prop);
@@ -87,7 +87,7 @@ var lockedInFalse = [];
 
     function addConc(testConc) {
         var conctype = $("concType").value === ("Therefore")? ">": "=";
-        var prop = (testConc)? testConc : $("newConcInput").value;
+        var prop = (typeof testConc !== "string")? $("newConcInput").value : testConc ;
         $("newConcInput").value = "";
         console.log("The user entered conclusion: " + prop);
         var msg = validateProp(prop);
