@@ -5,6 +5,7 @@ var alreadyTried = [];  //alreadyTried in format [rule name, [proposition number
 var transformed = []; //transformed in format [rule name, [proposition number 1, ...., proposition number n]]
 var lockedInTrue = [];
 var lockedInFalse = [];
+var givenProps=0;
 
 (function () {
 
@@ -73,6 +74,7 @@ var lockedInFalse = [];
             var propPF = Postfix.infixToPostfix(prop);
             prop = [props.length+1,prop,"Given Proposition", msg, propPF,Tree.postfixToTree(propPF)]; //propIndex, proposition, text output, number of variables, postfix, tree
             props.push(prop);
+            givenProps++;
             console.log("Stored proposition in Props Array in the format: [index,infix,rule/given,variables,postfix,tree]");
             if (props.length >= 1 && conc !== undefined) {
                 changeToSolve();
@@ -120,7 +122,7 @@ var lockedInFalse = [];
         if (conc !== undefined) {
             tbl += "<li id='conclusionItem' type='A' value='3'><table><tr><td>"+conc[0]+"</td><td>"+conc[5]+" "+conc[1]+"</td></tr></table></li>";
         }
-        console.log("Reconstructed Proof Table");
+        console.log("Reconstructed Proof Table\n");
         return tbl;
     }
 
@@ -138,7 +140,7 @@ var lockedInFalse = [];
         }
         Solver.solve();
         //Checks if any premise is not used, if so remove it from the outcome.
-        Cleaner.cleanup();
+        // Cleaner.cleanup();
         $("proofList").innerHTML = createTable();
         return false;
     }
@@ -147,10 +149,20 @@ var lockedInFalse = [];
         $("premForm").onsubmit = addProp;
         $("concForm").onsubmit = addConc;
         $("solveForm").onsubmit = solve;
+   
+/***************TEST SCENARIOS***************/
+//Basic Hypothetical Syllogism with cleanup testing
         // addProp("(p>s)|r");
         // addProp("p>q");
         // addProp("q>r");
         // addConc("p>r");
+
+//Basic unsolvable data
+        // addProp("(p>s)|r");
+        // addProp("p>q");
+        // addConc("p*r");
+
+//Replacement Rules
    }
 
    window.onload = init;
@@ -200,11 +212,13 @@ var Solver = {
     //PRECONDITION: Validated props and conc
     solvable: function() {
         console.log("Attempting to verify solvability");
+        var notSolvable=false;
         var Vars=[],_prop=[];
         var i = 0,j = 0;
         //Add all of the propositions PF to _prop[] and count total variables
-        for (i = 0; i < props.length; i++) {
-            _prop[i]=[props[i][4],"*"];
+        console.log("****Counting total number of variables in argument");
+        for (i = 0; i < givenProps; i++) {
+            _prop.push(props[i][4]);
             // Check if variables in prop is in Vars and if not push it in
             for (j = 0;j< props[i][3].length; j++) {
                 if (jQuery.inArray(props[i][3][j],Vars)===-1) {
@@ -218,18 +232,26 @@ var Solver = {
                 Vars.push(conc[2][j]);
             }
         }
+        console.log("****Counted a total of "+Vars.length+" variables");
+        var ast = "";
+        for (i = 0; i < props.length-1;i++){
+            ast = ast.concat("*");
+        }       
         //Create one long PF string for testing
-        _prop = Postfix.infixToPostfix(_prop[0].join('')+_prop[1].join('')+conc[0]+conc[5]);
+        _prop = _prop.join('')+ast+conc[3]+conc[5];
         //loop for all truth values, and test
         for (i = 0; i <Math.pow(2,Vars.length); i++) {
             var tempPropToSolve=_prop;
             for (j = 0;j<Vars.length;j++) {
                 tempPropToSolve = tempPropToSolve.replaceAll(Vars[j],binaryToTruth((i>>j)&1));
             }
-            if (!Postfix.postfixEval(tempPropToSolve)) {
-                console.log("Error: Argument is not solvable");
-                return false;
+            if (Postfix.postfixEval(tempPropToSolve)=="F") {
+                notSolvable = true;
             }
+        }
+        if (notSolvable){
+            console.log("Error: Argument is not solvable");
+            return false;
         }
         console.log("Attempt succeeded, this argument is a tautology");
         return true;
@@ -239,9 +261,15 @@ var Solver = {
         //if outcome of last transformation == conclusion then end recursion
         //if not then call itself again
         console.log("\n**********Attempting to solve proof**********");
-        while (props[props.length-1][1]!==conc[0]) {
+//IDEALLY SHOULD USE WHILE LOOP, BUT WILL USE 10 LOOPS FOR TESTING        
+        // while (props[props.length-1][1]!==conc[0]) {
+        //     this.heuristic();
+        // }
+//10 LOOPS FOR TESTING
+        for (var i = 0 ; i < 10 ; i++){
             this.heuristic();
         }
+
         console.log("***********Argument solved***********\n");
         return;
     },
@@ -250,6 +278,11 @@ var Solver = {
         //RULES IN HEURISTICAL ORDER, BRUTE FORCE
         for (var i = 0; i < props.length; i++) {
             //Simplification
+            if (this.replacementRules("Replacement", props[i][0])){
+                if (this.replacementRules(props[i])) {
+                    if (this.isSolved()) { return true; }
+                }
+            }
             if (this.notAlreadyTried("Simp.", props[i][0])){
                 if (this.simp(props[i])) {
                     if (this.isSolved()) { return true; }
@@ -284,127 +317,83 @@ var Solver = {
 // Exp.                 ((p*q)>r)==(p>(q>r))
 // M.E. Biconditional   (p=q)==((p>q)*(q>p))
 // M.E. Truth Table     (p=q)==((p*q)|(~p*~q))
+
     replacementRules: function(prop){
-        console.log("ATTEMPTING REPLACEMENT RULES FOR: " + prop[1]);
+        console.log("***************ATTEMPTING REPLACEMENT RULES FOR: " + prop[1]+"***************");
         var propTree = prop[5];
         //Replacement rules to | major operator
         if (propTree.top==="|") {
             if (propTree.left==="*" && propTree.right==="*") {
                 if (propTree.right.left==="~" && propTree.right.right==="~") {
                     if (Tree.compare(propTree.right.left.left,propTree.left.left) && Tree.compare(propTree.right.right.left,propTree.left.right)) {
-                        transformed.push(["M.E.",[prop[0]]]);
                         newPropTree = new treeNode("=",propTree.left.left,propTree.left.right);
-                        this.addTransformedProp(newPropTree, transformed[transformed.length-1]);
-                        console.log("Successfully applied rule: \"M.E.\"\n" + prop[1] + " -> " + props[props.length-1][1]);
-                        if (this.isSolved()) { return true; }
-                        transformed.push(["M.E.",[props[props.length-1][0]]]);
+                        if (this.addTransformedProp(newPropTree, ["M.E.",[prop[0]]])) { return true; }
                         newPropTree = new treeNode("*",new treeNode(">",propTree.left.left,propTree.left.right),new treeNode(">",propTree.left.right,propTree.left.left));
-                        this.addTransformedProp(newPropTree, transformed[transformed.length-1]);
-                        console.log("Successfully applied rule: \"M.E.\"\n" + props[props.length-2][1] + " -> " + props[props.length-1][1]);
-                        if (this.isSolved()) { return true; }
+                        if (this.addTransformedProp(newPropTree, ["M.E.",[props[props.length-1][0]]])) { return true; }
                         // M.E.
                     }
                 } else if (propTree.left.left==="~" && propTree.left.right==="~") {
                     if (Tree.compare(propTree.left.left.left,propTree.right.left) && Tree.compare(propTree.left.right.left,propTree.right.right)) {
-                        transformed.push(["M.E.",[prop[0]]]);
                         newPropTree = new treeNode("=",propTree.right.left,propTree.right.right);
-                        this.addTransformedProp(newPropTree, transformed[transformed.length-1]);
-                        console.log("Successfully applied rule: \"M.E.\"\n" + prop[1] + " -> " + props[props.length-1][1]);
-                        if (this.isSolved()) { return true; }
-                        transformed.push(["M.E.",[props[props.length-1][0]]]);
+                        if (this.addTransformedProp(newPropTree, ["M.E.",[prop[0]]])) { return true; }
                         newPropTree = new treeNode("*",new treeNode(">",propTree.right.left,propTree.right.right),new treeNode(">",propTree.right.right,propTree.right.left));
-                        this.addTransformedProp(newPropTree, transformed[transformed.length-1]);
-                        console.log("Successfully applied rule: \"M.E.\"\n" + props[props.length-2][1] + " -> " + props[props.length-1][1]);
-                        if (this.isSolved()) { return true; }
+                        if (this.addTransformedProp(newPropTree, ["M.E.",[props[props.length-1][0]]])) { return true; }
                         // M.E.
                     }
                 } else if (Tree.compare(propTree.left.left,propTree.right.left)){
-                    transformed.push(["Distrib.",[prop[0]]]);
                     newPropTree = new treeNode("*",propTree.left.left,new treeNode("|",propTree.right.right,propTree.left.right));
-                    this.addTransformedProp(newPropTree, transformed[transformed.length-1]);                
-                    console.log("Successfully applied rule: \"Distrib.\"\n" + prop[1] + " -> " + props[props.length-1][1]);
-                    if (this.isSolved()) { return true; }
+                    if (this.addTransformedProp(newPropTree, ["Distrib.",[prop[0]]])) { return true; }                
                     // Distrib.
                 } else if (Tree.compare(propTree.left.left,propTree.right.right)){
-                    transformed.push(["Distrib.",[prop[0]]]);
                     newPropTree = new treeNode("*",propTree.left.left,new treeNode("|",propTree.right.left,propTree.left.right));
-                    this.addTransformedProp(newPropTree, transformed[transformed.length-1]);                
-                    console.log("Successfully applied rule: \"Distrib.\"\n" + prop[1] + " -> " + props[props.length-1][1]);
-                    if (this.isSolved()) { return true; }
+                    if (this.addTransformedProp(newPropTree, ["Distrib.",[prop[0]]])) { return true; }               
                     // Distrib.
                 } else if (Tree.compare(propTree.left.right,propTree.right.left)){
-                    transformed.push(["Distrib.",[prop[0]]]);
                     newPropTree = new treeNode("*",propTree.left.right,new treeNode("|",propTree.right.right,propTree.left.left));
-                    this.addTransformedProp(newPropTree, transformed[transformed.length-1]);                
-                    console.log("Successfully applied rule: \"Distrib.\"\n" + prop[1] + " -> " + props[props.length-1][1]);
-                    if (this.isSolved()) { return true; }
+                    if (this.addTransformedProp(newPropTree, ["Distrib.",[prop[0]]])) { return true; }                
                     // Distrib.
                 } else if (Tree.compare(propTree.left.right,propTree.right.right)){
-                    transformed.push(["Distrib.",[prop[0]]]);
                     newPropTree = new treeNode("*",propTree.left.right,new treeNode("|",propTree.right.left,propTree.left.left));
-                    this.addTransformedProp(newPropTree, transformed[transformed.length-1]);                
-                    console.log("Successfully applied rule: \"Distrib.\"\n" + prop[1] + " -> " + props[props.length-1][1]);
-                    if (this.isSolved()) { return true; }
+                    if (this.addTransformedProp(newPropTree, ["Distrib.",[prop[0]]])) { return true; }                
                     // Distrib.
-                }
+                } 
             } else if (propTree.left==="~" && propTree.right==="~"){
                 if (!Tree.compare(propTree.left.left,propTree.right.left)){
-                    transformed.push(["DeM.",[prop[0]]]);
                     newPropTree = new treeNode("~", new treeNode("*",propTree.left.left,propTree.right.left));
-                    this.addTransformedProp(newPropTree, transformed[transformed.length-1]);                
-                    console.log("Successfully applied rule: \"DeM.\"\n" + prop[1] + " -> " + props[props.length-1][1]);
-                    if (this.isSolved()) { return true; }
+                    if (this.addTransformedProp(newPropTree, ["DeM.",[prop[0]]])) { return true; }                
                     // DeM.
                 }
             } else if (propTree.left==="~" || propTree.right==="~"){
-             if (propTree.left==="~"){
-                if (!Tree.compare(propTree.left.left,propTree.right)){
-                    transformed.push(["M.I.",[prop[0]]]);
-                    newPropTree = new treeNode(">",propTree.left.left,propTree.right);
-                    this.addTransformedProp(newPropTree, transformed[transformed.length-1]);                
-                    console.log("Successfully applied rule: \"M.I.\"\n" + prop[1] + " -> " + props[props.length-1][1]);
-                    if (this.isSolved()) { return true; }
+                if (propTree.left==="~"){
+                    if (!Tree.compare(propTree.left.left,propTree.right)){
+                        newPropTree = new treeNode(">",propTree.left.left,propTree.right);
+                        if (this.addTransformedProp(newPropTree, ["M.I.",[prop[0]]])) { return true; }                
                         // M.I.
-                        transformed.push(["Trans.",[props[props.length-1][0]]]);
                         newPropTree = new treeNode(">", new treeNode("~",newPropTree.left), new treeNode("~",newPropTree.right));
-                        this.addTransformedProp(newPropTree, transformed[transformed.length-1]);                
-                        console.log("Successfully applied rule: \"Trans.\"\n" + props[props.length-2][1] + " -> " + props[props.length-1][1]);
-                        if (this.isSolved()) { return true; }
+                        if (this.addTransformedProp(newPropTree, ["Trans.",[props[props.length-1][0]]])) { return true; }                
                         // Trans.
-                    }
-                } else {
-                 if (!Tree.compare(propTree.right.left,propTree.left)){
-                    transformed.push(["M.I.",[prop[0]]]);
-                    newPropTree = new treeNode(">",propTree.right.left,propTree.left);
-                    this.addTransformedProp(newPropTree, transformed[transformed.length-1]);                
-                    console.log("Successfully applied rule: \"M.I.\"\n" + prop[1] + " -> " + props[props.length-1][1]);
-                    if (this.isSolved()) { return true; }
+                    }   
+                } else { 
+                    if (!Tree.compare(propTree.right.left,propTree.left)){
+                        newPropTree = new treeNode(">",propTree.right.left,propTree.left);
+                        if (this.addTransformedProp(newPropTree, ["M.I.",[prop[0]]])) { return true; }
                         // M.I.
-                        transformed.push(["Trans.",[props[props.length-1][0]]]);
                         newPropTree = new treeNode(">", new treeNode("~",newPropTree.left), new treeNode("~",newPropTree.right));
-                        this.addTransformedProp(newPropTree, transformed[transformed.length-1]);                
-                        console.log("Successfully applied rule: \"Trans.\"\n" + props[props.length-2][1] + " -> " + props[props.length-1][1]);
-                        if (this.isSolved()) { return true; }
+                        if (this.addTransformedProp(newPropTree, ["Trans.",[props[props.length-1][0]]])) { return true; }
                         // Trans.
                     }
                 }
             } else if (propTree.right==="*" || propTree.left==="*") {
                 if (propTree.right==="*") {
                     if (Tree.compare(propTree.left,propTree.right.left) && Tree.compare(propTree.left,propTree.right.right) && Tree.compare(propTree.right.left,propTree.right.right)){
-                        transformed.push(["Distrib.",[prop[0]]]);
                         newPropTree = new treeNode("*", new treeNode("|", propTree.left, propTree.right.left), new treeNode("|", propTree.left, propTree.right.right));
-                        this.addTransformedProp(newPropTree, transformed[transformed.length-1]);                
-                        console.log("Successfully applied rule: \"Distrib.\"\n" + prop[1] + " -> " + props[props.length-1][1]);
-                        if (this.isSolved()) { return true; }
+                        if (this.addTransformedProp(newPropTree, ["Distrib.",[prop[0]]])) { return true; }
                         // Distrib.
                     }
                 } else {
                     if (Tree.compare(propTree.right,propTree.left.left) && Tree.compare(propTree.right,propTree.left.right) && Tree.compare(propTree.left.left,propTree.left.right)){
-                        transformed.push(["Distrib.",[prop[0]]]);
                         newPropTree = new treeNode("*", new treeNode("|", propTree.right, propTree.left.left), new treeNode("|", propTree.right, propTree.left.right));
-                        this.addTransformedProp(newPropTree, transformed[transformed.length-1]);                
-                        console.log("Successfully applied rule: \"Distrib.\"\n" + prop[1] + " -> " + props[props.length-1][1]);
-                        if (this.isSolved()) { return true; }
+                        if (this.addTransformedProp(newPropTree, ["Distrib.",[prop[0]]])) { return true; }
                         // Distrib.
                     }
                 }
@@ -412,9 +401,44 @@ var Solver = {
         }
         //Replacement rules to * major operator
         else if (propTree.top==="*") {
+            if (propTree.left===">" && propTree.right===">") {
+                if (Tree.compare(propTree.left.left,propTree.right.right)){
+                    newPropTree = new treeNode("=",propTree.left.left,propTree.right.right);
+                    if (this.addTransformedProp(newPropTree, ["M.E.",[prop[0]]])) { return true; }
+                    newPropTree = new treeNode("|",new treeNode("*",propTree.left.left,propTree.right.right),new treeNode("*",new treeNode("~",propTree.left.left), new treeNode("~",propTree.right.right)));
+                    if (this.addTransformedProp(newPropTree, ["M.E.",[props[props.length-1][0]]])) { return true; }
+                    // M.E.
+                } else if (Tree.compare(propTree.left.right,propTree.right.left)){
+                    newPropTree = new treeNode("=",propTree.left.right,propTree.right.left);
+                    if (this.addTransformedProp(newPropTree, ["M.E.",[prop[0]]])) { return true; }                
+                    newPropTree = new treeNode("|",new treeNode("*",propTree.left.right,propTree.right.left),new treeNode("*",new treeNode("~",propTree.left.right), new treeNode("~",propTree.right.left)));
+                    if (this.addTransformedProp(newPropTree, ["M.E.",[props[props.length-1][0]]])) { return true; }
+                    // M.E.
+                }
+            } else if (propTree.left==="|" && propTree.right==="|") {
+                if (Tree.compare(propTree.left.left,propTree.right.left)){
+                    newPropTree = new treeNode("|",propTree.left.left, new treeNode("|",propTree.right.right,propTree.left.right));
+                    if (this.addTransformedProp(newPropTree, ["Distrib.",[prop[0]]])) { return true; }                
+                    // Distrib.
+                } else if (Tree.compare(propTree.left.left,propTree.right.right)){
+                    newPropTree = new treeNode("|",propTree.left.left, new treeNode("|",propTree.right.left,propTree.left.right));
+                    if (this.addTransformedProp(newPropTree, ["Distrib.",[prop[0]]])) { return true; }                
+                    // Distrib.
+                } else if (Tree.compare(propTree.left.right,propTree.right.left)){
+                    newPropTree = new treeNode("|",propTree.left.right, new treeNode("|",propTree.right.right,propTree.left.left));
+                    if (this.addTransformedProp(newPropTree, ["Distrib.",[prop[0]]])) { return true; }                
+                    // Distrib.
+                } else if (Tree.compare(propTree.left.right,propTree.right.right)){
+                    newPropTree = new treeNode("|",propTree.left.right, new treeNode("|",propTree.right.left,propTree.left.left));
+                    if (this.addTransformedProp(newPropTree, ["Distrib.",[prop[0]]])) { return true; } 
+                    // Distrib.
+                }
+            } else if (propTree.left==="|" || propTree.right==="|") {
+
+            }
             return false; // TO-DO Build out * replacement rules
         }
-        console.log("FINISHED REPLACEMENT RULES FOR: " + prop[1]);
+        console.log("***************FINISHED REPLACEMENT RULES FOR: " + prop[1]+"***************");
     },
 
 //END REPLACEMENT RULES
@@ -448,10 +472,10 @@ var Solver = {
 
 
             //Create new prop from left and right leafs and add Transformation
-            newPropTree = new treeNode(prop[5].left,prop[5].left.left,prop[5].right.right);
+            newPropTree = new treeNode(prop[5].left.top,prop[5].left.left,prop[5].right.right);
             this.addTransformedProp(newPropTree, transformed[transformed.length-1]);
             console.log("Successfully applied rule: \"Simp.\"\n" + prop[1] + " -> " + props[props.length-1][1]);
-            newPropTree = new treeNode(prop[5].right,prop[5].left.left,prop[5].right.right);
+            newPropTree = new treeNode(prop[5].right.top,prop[5].left.left,prop[5].right.right);
             this.addTransformedProp(newPropTree, transformed[transformed.length-1]);
             console.log("Successfully applied rule: \"Simp.\"\n" + prop[1] + " -> " + props[props.length-1][1]);
             return true;
@@ -504,20 +528,29 @@ var Solver = {
     },
 
     notAlreadyTried: function(rule, propNum1, propNum2, propNum3, propNum4) {
-        var propNums = [propNum1];
-        if (propNum2) { propNums.push(propNum2); }
-        if (propNum3) { propNums.push(propNum3); }
-        if (propNum4) { propNums.push(propNum4); }
-        if (jQuery.inArray([rule,propNums],alreadyTried)===-1) {
-            alreadyTried.push([rule,propNums]);
+        if (jQuery.inArray(rule,["DeM.", "Distrib.", "D.N.", "Exp.", "M.E.", "M.I.", "Trans."])>=0){
             return true;
         }
-        return false;
+        var newAttempt = [rule,propNum1,propNum2,propNum3,propNum4];
+        for (var i=0;i<alreadyTried.length;i++){
+            for (var j=0;j<5;j++){
+                if (newAttempt[j]!=alreadyTried[i][j]){
+                    break;
+                } else if (j==4) {
+                    return false;
+                }
+            }
+        }
+        alreadyTried.push(newAttempt);
+        return true;
     },
 
     addTransformedProp: function(tree, trans) {
-        var prop_infix = Tree.treeToInfix(tree);
-        props.push([props.length+1,prop_infix,trans, null, null,tree]); //propIndex, proposition, text output, number of variables, postfix, tree
+        transformed.push(trans);
+        console.log("Successfully applied rule: "+trans[0]+"\n" + prop[1] + " -> " + props[props.length-1][1]);
+        props.push([props.length+1,Tree.treeToInfix(tree),trans, undefined, undefined, tree]); //propIndex, proposition, text output, number of variables, postfix, tree
+        if (this.isSolved()) { return true; }
+        else return false;        
     }
 }; // End of Solver declaration.
 
@@ -629,8 +662,9 @@ var Postfix = {
     // PRECONDITION: postfixStr must be in T & F
     postfixEval: function(postfixStr) {
         var stackArr=[];
+        postfixStr=postfixStr.split('');
         for(var i = 0; i < postfixStr.length; i++) {
-            if(typeof postfixStr[i] == "boolean") { stackArr.push(postfixStr[i]); }
+            if(postfixStr[i]=="T" || postfixStr[i]=="F") { stackArr.push(postfixStr[i]); }
             else {
                 var pushVal;
                 if (postfixStr[i]=="~") {
