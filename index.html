@@ -2,7 +2,7 @@
 <html lang="en"> 
 <head> 
 	<meta charset="utf-8"> 
-	<title>Logic Prover 1.1 Beta</title>
+	<title>Logic Prover 1.3 Beta</title>
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	<script type="text/javascript" src="js/logicProver.js"></script>
@@ -11,14 +11,14 @@
 	<div id="container">
 		<h1>My Logic Prover 1.1 Beta</h1>
 		<div class="ColumnDiv" id="proofDiv" style="float:left">
-			<div>
+			<div >
 				<fieldset><legend>Logical Proof</legend>
-					<table style="float:right;"><tr><th>Propositions</th><th>Transformation Rules</th></tr></table>
+					<table style="float:right;"><tr><th>Propositions</th><th>Transformation Rules</th><th style="width:50px">Used Count</th></tr></table>
 					<ol id="proofList">
-						<li><table><tr><td>First premise</td><td>1. Given premise</td></tr></table>
-						<li><table><tr><td>Second premise</td><td>2. Given premise</td></tr></table>
-						<li><table><tr><td>Third premise</td><td>3. Given premise</td></tr></table>
-						<li id="conclusionItem" type="A" value="3"><table><tr><td>Conclusion</td><td>4. Given conclusion</td></tr></table>
+						<li><table><tr><td>First premise</td><td>1. Given premise</td><td style="width:50px;text-align:center">0</td></tr></table>
+						<li><table><tr><td>Second premise</td><td>2. Given premise</td><td style="width:50px;text-align:center">0</td></tr></table>
+						<li><table><tr><td>Third premise</td><td>3. Given premise</td><td style="width:50px;text-align:center">0</td></tr></table>
+						<li id="conclusionItem" type="A" value="3"><table><tr><td>Conclusion</td><td>4. Given conclusion</td><td style="width:50px;text-align:center">0</td></tr></table>
 					</ol>		
 				</fieldset>
 			</div>
@@ -27,50 +27,37 @@
 			<form action="#" method="post" id="premForm">
 				<fieldset><legend>Given Premises</legend>
 					<div>
-						<span>
-							<b>Key:</b> Variables: p, q, r, s, t, u, v, w <br>
-							Operators: *=and, |=or, ~=not, >=if...then, ==...if and only if...<br/></span>
-							<br/>
-							<input type="text" name="newPremInput" id="newPremInput" placeholder="add the given premises here" size="100">
-							<input type="submit" value="Add premise" class="submit" id="submitPrem">
-						</div>
-					</fieldset>
-				</form>
-				<form action="#" method="post" id="concForm">
-					<fieldset><legend>Given Conclusion</legend>		
-						<div>
-							<label name="Conclusion Type">Conclusion Type</label>
-							<select name="Conclusion Type" id="concType">
-								<option value="Therefore" selected>Therefore</option>
-								<option value="Equality">Equality</option>
-							</select>
-							<input type="text" name="newConcInput" id="newConcInput" placeholder="add the given conclusion here" size="100">
-							<input type="submit" value="Add Conclusion" class="submit" id="submitConc">
-						</div>
-					</fieldset>
-				</form>
-				<form action="#" method="post" id="solveForm">
-					<fieldset><legend>Solve Logical Proof</legend>
-						<div id="solveDiv">
-							<input type="submit" value="Solve" class="submit" id="submitSolve">
-						</div>
-					</fieldset>
-				</form>
-			</div>
-<!-- 			<div class="ColumnDiv" id="truthTableCol">
-				<form action="#" method="post" id="truthTableForm">
-					<fieldset><legend>Truth Table</legend>
-						<div>
-							<table id="truthTable"><tr><th>var1</th><th>var2</th><th>var3</th><th>concType</th><th>conc</th></tr>
-							<tr><td>TRUE</td><td>TRUE</td></tr>
-							<tr><td>TRUE</td><td>FALSE</td></tr>
-							<tr><td>FALSE</td><td>TRUE</td></tr>
-							<tr><td>FALSE</td><td>FALSE</td></tr>
-							</table>
-						</div>
-					</fieldset>
-				</form>
-			</div> -->
+						<span><b>Key:</b> Variables: A, B, C, D, E, F, G, H <br>
+							Operators: *=and, v=or, ~=not, >=if...then, ==...if and only if...<br/></span>
+						<br/>
+						<input type="text" name="newPremInput" id="newPremInput" placeholder="add the given premises here" size="100">
+						<input type="submit" value="Add premise" class="submit" id="submitPrem">
+					</div>
+				</fieldset>
+			</form>
+			<form action="#" method="post" id="concForm">
+				<fieldset><legend>Given Conclusion</legend>		
+					<div>
+						<label name="Conclusion Type">Conclusion Type</label>
+						<select name="Conclusion Type" id="concType">
+							<option value="Therefore" selected>Therefore</option>
+							<option value="Equality">Equality</option>
+						</select>
+						<input type="text" name="newConcInput" id="newConcInput" placeholder="add the given conclusion here" size="100">
+						<input type="submit" value="Add Conclusion" class="submit" id="submitConc">
+					</div>
+				</fieldset>
+			</form>
+			<form action="#" method="post" id="solveForm">
+				<fieldset><legend>Solve Logical Proof</legend>
+					<div id="solveDiv">
+						<input type="submit" value="Solve" class="submit" id="submitSolve">
+					</div>
+				</fieldset>
+			</form>
 		</div>
-	</body> 
-	</html> 
+	</div>
+</body> 
+</html> 
+
+
