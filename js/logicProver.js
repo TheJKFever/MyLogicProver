@@ -168,10 +168,10 @@ var givenProps = 0;
         // addConc("A>(DvE)");
 
 //Final Exam question 5
-        addProp("E>B");
-        addProp("BvC");
-        addProp("C=D");
-        addConc("EvD");
+        // addProp("E>B");
+        // addProp("BvC");
+        // addProp("C=D");
+        // addConc("EvD");
 
    }
    window.onload = init;
