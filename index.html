@@ -2,14 +2,14 @@
 <html lang="en"> 
 <head> 
 	<meta charset="utf-8"> 
-	<title>Logic Prover 1.3 Beta</title>
+	<title>Logic Prover 1.5 Beta</title>
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	<script type="text/javascript" src="js/logicProver.js"></script>
 </head>
 <body>
 	<div id="container">
-		<h1>My Logic Prover 1.1 Beta</h1>
+		<h1>My Logic Prover 1.5 Beta</h1>
 		<div class="ColumnDiv" id="proofDiv" style="float:left">
 			<div >
 				<fieldset><legend>Logical Proof</legend>
@@ -18,13 +18,13 @@
 						<li><table><tr><td>First premise</td><td>1. Given premise</td><td style="width:50px;text-align:center">0</td></tr></table>
 						<li><table><tr><td>Second premise</td><td>2. Given premise</td><td style="width:50px;text-align:center">0</td></tr></table>
 						<li><table><tr><td>Third premise</td><td>3. Given premise</td><td style="width:50px;text-align:center">0</td></tr></table>
-						<li id="conclusionItem" type="A" value="3"><table><tr><td>Conclusion</td><td>4. Given conclusion</td><td style="width:50px;text-align:center">0</td></tr></table>
+						<li id="conclusionItem" type="A" value="3"><table><tr><td>Conclusion</td><td>Given conclusion</td><td style="width:50px;text-align:center">0</td></tr></table>
 					</ol>		
 				</fieldset>
 			</div>
 		</div>
 		<div class="ColumnDiv" id="propositionsDiv">
-			<form action="#" method="post" id="premForm">
+			<form action="#" method="get" id="premForm">
 				<fieldset><legend>Given Premises</legend>
 					<div>
 						<span><b>Key:</b> Variables: A, B, C, D, E, F, G, H <br>
@@ -35,7 +35,7 @@
 					</div>
 				</fieldset>
 			</form>
-			<form action="#" method="post" id="concForm">
+			<form action="#" method="get" id="concForm">
 				<fieldset><legend>Given Conclusion</legend>		
 					<div>
 						<label name="Conclusion Type">Conclusion Type</label>
@@ -48,10 +48,29 @@
 					</div>
 				</fieldset>
 			</form>
-			<form action="#" method="post" id="solveForm">
+			<form action="#" method="get" id="solveForm">
 				<fieldset><legend>Solve Logical Proof</legend>
 					<div id="solveDiv">
 						<input type="submit" value="Solve" class="submit" id="submitSolve">
+					</div>
+				</fieldset>
+			</form>
+			<form action="#" method="get" id="finalForm">
+				<fieldset><legend>Final Exam Questions</legend>
+					<div id="solveDiv">
+						<table><tr>
+						<td><input type="button" style="width:98%" value="1" class="submit" id="fq1"></td>
+						<td><input type="button" style="width:98%" value="2" class="submit" id="fq2"></td>
+						<td><input type="button" style="width:98%" value="3" class="submit" id="fq3"></td>
+						<td><input type="button" style="width:98%" value="4" class="submit" id="fq4"></td>
+						<td><input type="button" style="width:98%" value="5" class="submit" id="fq5"></td>
+					</tr><tr>
+						<td><input type="button" style="width:98%" value="6" class="submit" id="fq6"></td>
+						<td><input type="button" style="width:98%" value="7" class="submit" id="fq7"></td>
+						<td><input type="button" style="width:98%" value="8" class="submit" id="fq8"></td>
+						<td><input type="button" style="width:98%" value="9" class="submit" id="fq9"></td>
+						<td><input type="button" style="width:98%" value="10" class="submit" id="fq10"></td>
+					</tr></table>
 					</div>
 				</fieldset>
 			</form>

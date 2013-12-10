@@ -1,4 +1,5 @@
 var props = []; //In the form of [[0-index,1-Infix,2-rule/given,3-variables,4-postfix,5-tree,6-usedCount,7-decommissioned],...,...]
+var finalProps = []; //To be used by Cleaner Object
 var concs = [];    //In the form of [[0-index,1-Infix,2-rule/given,3-variables,4-postfix,5-tree,6-usedCount,7-decommissioned,8-concType],...,...]
 var givenProps = 0;
 
@@ -68,10 +69,10 @@ var givenProps = 0;
             if (props.length >= 1 && concs.length!==0) {
                 changeToSolve();
             }
-            $("proofList").innerHTML = createTable();
+            $("proofList").innerHTML = createTable(props);
         } else {
             console.log("Invalid proposition: "+prop[1]);
-            alert(prop[1]);
+            alert(prop);
         }
         return false;
     }
@@ -95,21 +96,21 @@ var givenProps = 0;
                 $("newConcInput").disabled = true;
                 $("submitConc").disabled = true;
             }
-            $("proofList").innerHTML = createTable();
+            $("proofList").innerHTML = createTable(props);
         } else { 
             console.log("Invalid proposition: "+prop[1]);
-            alert(prop[1]);
+            alert(prop);
         }
         return false;
     }
 
-    function createTable() {
-        var tbl="";
-        for (var i = 0; i < props.length; i++) {
-            if (props[i][2][0]==="Given Proposition") {
-                tbl += "<li><table><tr><td>"+props[i][1]+"</td><td>"+props[i][2][0]+"</td><td style='width:50px;text-align:center'>"+props[i][6]+"</td></tr></table></li>";
+    function createTable(propArray) {
+        var tbl = "";
+        for (var i = 0; i < propArray.length; i++) {
+            if (propArray[i][2][0]==="Given Proposition") {
+                tbl += "<li><table><tr><td>"+propArray[i][1]+"</td><td>"+propArray[i][2][0]+"</td><td style='width:50px;text-align:center'>"+propArray[i][6]+"</td></tr></table></li>";
             } else {
-                tbl += "<li><table><tr><td>"+props[i][1]+"</td><td>"+(props[i][2][1].join(", ")+" "+props[i][2][0])+"</td><td style='width:50px;text-align:center'>"+props[i][6]+"</td></tr></table></li>";
+                tbl += "<li><table><tr><td>"+propArray[i][1]+"</td><td>"+(propArray[i][2][1].join(", ")+" "+propArray[i][2][0])+"</td><td style='width:50px;text-align:center'>"+propArray[i][6]+"</td></tr></table></li>";
             }
         }
         if (concs.length!==0) {
@@ -126,7 +127,26 @@ var givenProps = 0;
         }
     }
 
-    function solve() {
+    function resetProof(){
+        props = [];
+        finalProps = [];
+        concs = [];
+        givenProps = 0;
+        $("proofList").innerHTML = 
+                "<li><table><tr><td>First premise</td><td>1. Given premise</td><td style='width:50px;text-align:center'>0</td></tr></table>"+
+                "<li><table><tr><td>Second premise</td><td>2. Given premise</td><td style='width:50px;text-align:center'>0</td></tr></table>"+
+                "<li><table><tr><td>Third premise</td><td>3. Given premise</td><td style='width:50px;text-align:center'>0</td></tr></table>"+
+                "<li id='conclusionItem' type='A' value='3'><table><tr><td>Conclusion</td><td>Given conclusion</td><td style='width:50px;text-align:center'>0</td></tr></table>";
+        $("concForm").style.display = "block";
+        $("solveForm").style.display = "none";
+        $("submitSolve").value = "Solve";
+        $("solveForm").onsubmit = solve;                
+        return false;
+    }
+
+    function solve(){
+        $("submitSolve").value = "Clear";
+        $("solveForm").onsubmit = resetProof;
         if (!Solver.solvable()) {
             alert("This argument is not valid");
             return false;
@@ -135,7 +155,7 @@ var givenProps = 0;
             Cleaner.cleanup();
         }
         // else Cleaner.removeZeros(props);
-        $("proofList").innerHTML = createTable();
+        $("proofList").innerHTML = createTable(finalProps);
         return false;
     }
 
@@ -143,39 +163,88 @@ var givenProps = 0;
         $("premForm").onsubmit = addProp;
         $("concForm").onsubmit = addConc;
         $("solveForm").onsubmit = solve;
+        $("fq1").onclick = examQuestion1;
+        $("fq2").onclick = examQuestion2;
+        $("fq3").onclick = examQuestion3;
+        $("fq4").onclick = examQuestion4;
+        $("fq5").onclick = examQuestion5;
+        $("fq6").onclick = examQuestion6;
+        $("fq7").onclick = examQuestion7;
+        $("fq8").onclick = examQuestion8;
+        $("fq9").onclick = examQuestion9;
+        $("fq10").onclick = examQuestion10;
+    }
 
 /*************** EXAM QUESTIONS ***************/
-//Final Exam question 1
-        // addProp("A>(~B*C)");
-        // addProp("Dv~E");
-        // addProp("AvE");
-        // addConc("B>D");
+    function examQuestion1(){
+        resetProof();
+        addProp("A>(~B*C)");
+        addProp("Dv~E");
+        addProp("AvE");
+        addConc("B>D");
+        return false;
+    }    
+    function examQuestion2(){
+        resetProof();
+        addProp("B>((AvC)>F)");
+        addProp("(FvD)>E");
+        addConc("B>(C>E)");
+    }
+    function examQuestion3(){
+        resetProof();
+        addProp("~(H*~(AvB))");
+        addProp("~(AvD)");
+        addProp("C>(AvE)");
+        addConc("~(~E*~B)v~(CvH)");
 
-//Final Exam question 2
-        // addProp("B>((AvC)>F)");
-        // addProp("(FvD)>E");
-        // addConc("B>(C>E)");
+    }
+    function examQuestion4(){
+        resetProof();
+        addProp("A>(BvC)");
+        addProp("(B>D)*(C>E)");
+        addConc("A>(DvE)");
+    }
+    function examQuestion5(){
+        resetProof();
+        addProp("E>B");
+        addProp("BvC");
+        addProp("C=D");
+        addConc("EvD");
+    }
+    function examQuestion6(){
+        resetProof();
+        addProp("(A>B)>B");
+        addConc("(B>A)>A");        
+    }
+    function examQuestion7(){
+        resetProof();
+        addProp("Av(~B*C)");
+        addProp("B>~A");
+        addConc("~B");
+    }
+    function examQuestion8(){
+        resetProof();
+        addProp("A>(B>C)");
+        addConc("(A>B)>(A>C)");
+    }
+    function examQuestion9(){
+        resetProof();
+        addProp("Av(B>D)");
+        addProp("B>~E");
+        addProp("B*(E=D)");
+        addConc("B>(AvC)");
+    }
+    function examQuestion10(){
+        resetProof();
+        addProp("G=(Av(~Bv~C))");
+        addProp("(Av~B)>D");
+        addProp("(Av~C)>E");
+        addConc("G>(D*E)");
+    }
 
-//Final Exam question 3
-        // addProp("~(H*~(AvB))");
-        // addProp("~(AvD)");
-        // addProp("C>(AvE)");
-        // addConc("~(~E*~B)v~(CvH)");
-
-//Final Exam question 4
-        // addProp("A>(BvC)");
-        // addProp("(B>D)*(C>E)");
-        // addConc("A>(DvE)");
-
-//Final Exam question 5
-        // addProp("E>B");
-        // addProp("BvC");
-        // addProp("C=D");
-        // addConc("EvD");
-
-   }
-   window.onload = init;
+    window.onload = init;
 })();
+
 
 
 /********************************
@@ -184,6 +253,7 @@ var givenProps = 0;
 
 String.prototype.replaceAll = function (find, replace) {
   var str = this;
+  console.log("replacing all "+find+" with "+replace);
   return str.replace(new RegExp(find, 'g'), replace);
 };
 
@@ -192,7 +262,7 @@ function $(elementID) {
 }
 
 function isOperand(who) {
-    return (jQuery.inArray(who,["A", "B", "C", "D", "E", "F", "G", "H"]) >= 0)? true: false;
+    return (jQuery.inArray(who,["A", "B", "C", "D", "E", "F", "G", "H", "TRUE", "FALSE"]) >= 0)? true: false;
 }
 
 function isOperator(who) {
@@ -269,13 +339,13 @@ var Solver = {
         var propsLength = props.length;
         BackwardsSolver.solve();
         for (i=0; i<13;i++){
-            if (this.heuristic(i)) return true;
+            if (this.heuristic()) return true;
         }
         alert("Could Not Solve");
         return false;
     },
 
-    heuristic: function(count) {
+    heuristic: function() {
         var i;
         var propsLength = props.length;
         for (i = 0; i < propsLength; i++) {
@@ -291,6 +361,16 @@ var Solver = {
                         if (this.addTransformedProp(new treeNode("v",new treeNode("*",root.left,root.right),new treeNode("*",new treeNode("~",undefined,root.left), new treeNode("~",undefined,root.right))), ["Truth Table Form",[props[i][0]]])) return true;
                     }
                     else if (root.top==="v") {
+                        //Immediate Inferences
+                        if (root.right.top==="FALSE"){
+                            if (this.addTransformedProp(root.left, ["Immediate Inference",[props[i][0]]])) return true;
+                        } else if (root.left.top==="FALSE"){
+                            if (this.addTransformedProp(root.right, ["Immediate Inference",[props[i][0]]])) return true;
+                        }                        
+                        //Tautology
+                        if (Tree.compare(root.left, root.right)){
+                            if (this.addTransformedProp(root.left, ["Tautology",[props[i][0]]])) return true;                
+                        }
                         //DISTRIB
                         if (root.left.top==="*" && root.right.top==="*") {
                             if (Tree.compare(root.left.left,root.right.left)){
@@ -349,6 +429,16 @@ var Solver = {
                         if (this.addTransformedProp(new treeNode(">",new treeNode("~", undefined, root.right),root.left), ["MI",[props[i][0]]])) return true;
                     }
                     else if (root.top==="*"){
+                        //Immediate Inferences
+                        if (root.right.top==="TRUE"){
+                            if (this.addTransformedProp(root.left, ["Immediate Inference",[props[i][0]]])) return true;
+                        } else if (root.left.top==="TRUE"){
+                            if (this.addTransformedProp(root.right, ["Immediate Inference",[props[i][0]]])) return true;
+                        }
+                        //Tautology
+                        if (Tree.compare(root.left, root.right)){
+                            if (this.addTransformedProp(root.left, ["Tautology",[props[i][0]]])) return true;                
+                        }
                         //SIMP
                         if (this.addTransformedProp(root.left, ["Simp.",[props[i][0]]])) return true;
                         if (this.addTransformedProp(root.right, ["Simp.",[props[i][0]]])) return true;
@@ -381,6 +471,12 @@ var Solver = {
                         }                
                     }
                     else if (root.top===">"){
+                        //Immediate Inferences
+                        if (root.left.top==="TRUE"){
+                            if (this.addTransformedProp(root.right, ["Immediate Inference",[props[i][0]]])) return true;
+                        } else if (root.right.top==="FALSE"){
+                            if (this.addTransformedProp(new treeNode("~",undefined,root.left), ["Immediate Inference",[props[i][0]]])) return true;
+                        }
                         //EXP
                         if (root.left.top==="*"){
                             if (this.addTransformedProp(new treeNode(">",root.left.left,new treeNode(">",root.left.right,root.right)), ["Exp.",[props[i][0]]])) return true;
@@ -431,6 +527,16 @@ var Solver = {
             result.push(["ME.",new treeNode("*",new treeNode(">",prop.left,prop.right),new treeNode(">",prop.right,prop.left))]);                          
             result.push(["Truth Table Form",new treeNode("v",new treeNode("*",prop.left,prop.right),new treeNode("*",new treeNode("~",undefined,prop.left), new treeNode("~",undefined,prop.right)))]);
         } else if (prop.top==="v") {
+            //Immediate Inferences
+            if (prop.right.top==="FALSE"){
+                result.push(["Immediate Inference",prop.left]);
+            } else if (prop.left.top==="FALSE"){
+                result.push(["Immediate Inference",prop.right]);
+            }                        
+            //Tautology
+            if (Tree.compare(prop.left, prop.right)){
+                result.push(["Tautology",prop.left]);              
+            }
             //Comm
             result.push(["Comm.",new treeNode(prop.top,prop.right,prop.left)]);
             if (prop.right.top==="v" && prop.left.top==="v"){
@@ -488,6 +594,16 @@ var Solver = {
                 result.push(["Distrib.",new treeNode("*", new treeNode("v", prop.right, prop.left.left), new treeNode("v", prop.right, prop.left.right))]);
             }
         } else if (prop.top==="*") {
+            //Immediate Inferences
+            if (prop.right.top==="TRUE"){
+                result.push(["Immediate Inference",prop.left]);
+            } else if (prop.left.top==="TRUE"){
+                result.push(["Immediate Inference",prop.right]);
+            }
+            //Tautology
+            if (Tree.compare(prop.left, prop.right)){
+                result.push(["Tautology",prop.left]);              
+            }
             //DISTRIB
             if (prop.left.top==="v" && prop.right.top==="v") {
                 if (Tree.compare(prop.left.left,prop.right.left)){
@@ -507,15 +623,18 @@ var Solver = {
             }
             //ME
             if (prop.left.top===">" && prop.right.top===">") {
-                if (Tree.compare(prop.left.left,prop.right.right)){
+                if (Tree.compare(prop.left.left,prop.right.right) && Tree.compare(prop.left.right,prop.right.left)){
                     result.push(["ME.",new treeNode("=",prop.left.left,prop.right.left)]);
-                    result.push(["Truth Table Form",new treeNode("v",new treeNode("*",prop.left.left,prop.right.left),new treeNode("*",new treeNode("~",undefined,prop.left.left), new treeNode("~",undefined,prop.right.left)))]);
-                } else if (Tree.compare(prop.left.right,prop.right.left)){
-                    rresult.push(["ME.",new treeNode("=",prop.left.left,prop.right.left)]);
                     result.push(["Truth Table Form",new treeNode("v",new treeNode("*",prop.left.left,prop.right.left),new treeNode("*",new treeNode("~",undefined,prop.left.left), new treeNode("~",undefined,prop.right.left)))]);
                 }
             }
         } else if (prop.top===">"){
+            //Immediate Inferences
+            if (prop.left.top==="TRUE"){
+                result.push(["Immediate Inference",prop.right]);
+            } else if (prop.right.top==="FALSE"){
+                result.push(["Immediate Inference",new treeNode("~",undefined,prop.left)]);
+            }
             //MI
             result.push(["MI",new treeNode("v",new treeNode("~", undefined, prop.left),prop.right)]);
             //TRANS
@@ -548,7 +667,7 @@ var Solver = {
         var result = [];
         var root=prop[5];
         //TOP ACTION
-        if (root.top===undefined || isOperand(root.top)) return false;
+        if (isOperand(root.top)) return false;
         if (root.top==="~"){
             if (root.right.top==="*"){
                 if (this.addTransformedProp(new treeNode("v", new treeNode("~", undefined, root.right.left), new treeNode("~", undefined, root.right.right)), ["TD",[prop[0]]]))  return true;
@@ -612,18 +731,100 @@ var Solver = {
         return result;
     },
 
-    removeDN: function(prop){
-        if (prop.top===undefined || isOperand(prop.top)) return prop;
-        if (prop.top==="~" && prop.right.top==="~"){
-            prop = prop.right.right;
-            if (prop.top===undefined || isOperand(prop.top)) return prop;
+    removeDN: function(tree){
+        if (tree.top===undefined || isOperand(tree.top)) return tree;
+        if (tree.top==="~" && tree.right.top==="~"){
+            tree = tree.right.right;
+            if (tree.top===undefined || isOperand(tree.top)) return tree;
         }
-        if (prop.top!=="~"){
-            prop.left = this.removeDN(prop.left);
-            if (prop.top===undefined || isOperand(prop.top)) return prop;
+        if (tree.top!=="~"){
+            tree.left = this.removeDN(tree.left);
         }
-        prop.right = this.removeDN(prop.right);
-        return prop;
+        tree.right = this.removeDN(tree.right);
+        return tree;
+    },
+
+    convertNonTruth: function(tree){
+        if (tree.top===undefined || isOperand(tree.top)) return tree;
+        if (tree.top==="~"){
+            if (tree.right.top==="FALSE"){
+                tree.top="TRUE";
+                return tree;
+            } 
+            else if (tree.right.top==="TRUE"){
+                tree.top="FALSE";
+                return tree;
+            }
+        }
+        if (tree.top!=="~"){
+            tree.left = this.convertNonTruth(tree.left);
+        }
+        tree.right = this.convertNonTruth(tree.right);
+        return tree;
+    },
+
+    truthReplacement: function(prop){
+        var result=[];
+        var root=prop[5];
+        if (isOperand(root.top)) return false;
+        //TOP ACTION
+        if (root.top==="*"){
+            if (Tree.compare(new treeNode("~",undefined,root.left),root.right) || Tree.compare(root.left,new treeNode("~",undefined,root.right))){
+                prop[7]=true;
+                if (this.addTransformedProp(new treeNode("FALSE"), ["Consistency",[prop[0]]])) return true;                
+            }
+        }
+        if (root.top==="v"){
+            if (Tree.compare(new treeNode("~",undefined,root.left),root.right) || Tree.compare(root.left,new treeNode("~",undefined,root.right))){
+                prop[7]=true;
+                if (this.addTransformedProp(new treeNode("TRUE"), ["Exluded Middle",[prop[0]]])) return true;                                            
+            }
+        }
+        //START RECURSIVE LEFT
+        if (root.top!=="~"){            
+            result = this.truthReplacementRecursive(root.left, []);
+            for (x=0;x<result.length;x++){
+                prop[7]=true;
+                if (this.addTransformedProp(new treeNode(root.top, result[x][1], root.right), [result[x][0],[prop[0]]]))  return true;
+            }
+        }
+        //START RECURSIVE RIGHT
+        result = this.truthReplacementRecursive(root.right, []);
+        for (x=0;x<result.length;x++){
+            prop[7]=true;
+            if (this.addTransformedProp(new treeNode(root.top, root.left, result[x][1]), [result[x][0],[prop[0]]]))  return true;
+        }
+        return false;
+    },
+
+    truthReplacementRecursive: function(tree, result){
+        var resultRecursive = [];
+        var x;
+        if (tree.top===undefined || isOperand(tree.top)) return result;
+        //RECURSIVE ACTION
+        if (tree.top==="*"){
+            if (Tree.compare(new treeNode("~",undefined,tree.left),tree.right) || Tree.compare(tree.left,new treeNode("~",undefined,tree.right))){
+                result.push(["Consistency",new treeNode("FALSE")]);              
+            }
+        }
+        if (tree.top==="v"){
+            if (Tree.compare(new treeNode("~",undefined,tree.left),tree.right) || Tree.compare(tree.left,new treeNode("~",undefined,tree.right))){
+                result.push(["Exluded Middle",new treeNode("TRUE")]);                                            
+            }
+        }
+        //CONTINUE RECURSIVE LEFT
+        if (tree.top!=="~"){
+            resultRecursive = this.truthReplacementRecursive(tree.left, []);
+            for (x=0;x<resultRecursive.length;x++){
+                result.push([resultRecursive[x][0],new treeNode(tree.top, resultRecursive[x][1], tree.right)]);
+            }
+        }
+        //CONTINUE RECURSIVE RIGHT
+        resultRecursive = this.truthReplacementRecursive(tree.right, []);
+        for (x=0;x<resultRecursive.length;x++){
+            result.push([resultRecursive[x][0],new treeNode(tree.top, tree.left, resultRecursive[x][1])]);
+        }
+        return result;
     },
 
     inferenceRules: function(prop){
@@ -669,7 +870,7 @@ var Solver = {
                         if (this.addTransformedProp(new treeNode(">",root.left,props[i][5].right), ["HS",[prop[0],props[i][0]]])) return true;
                     }
                     if (Tree.compare(root.left,props[i][5].right)) {
-                        if (this.addTransformedProp(new treeNode(">",root.right,props[i][5].left), ["HS",[prop[0],props[i][0]]])) return true;
+                        if (this.addTransformedProp(new treeNode(">",props[i][5].left,root.right), ["HS",[prop[0],props[i][0]]])) return true;
                     }
                     for (var j=0;j<props.length;j++){
                         if (prop[2][1][0]!==props[j][0]){
@@ -766,12 +967,8 @@ var Solver = {
 
     addTransformedProp: function(tree, trans) {
         tree = this.removeDN(tree);
-        if (tree.top==="v" || tree.top==="*"){
-            if (Tree.compare(tree.left, tree.right)){
-                console.log("Removed tautology: "+Tree.treeToInfix(tree)+" from: \""+trans[0]+"\" on "+trans[1]);
-                tree = tree.left;
-            }
-        }
+        tree = this.convertNonTruth(tree);
+        // tree = this.removeTautology(tree);
         var propInfix = Tree.treeToInfix(tree);
         if (propInfix.length>27) return false;
         if ((propInfix.split("~").length-1)>4) return false;
@@ -787,6 +984,7 @@ var Solver = {
             props[trans[1][0]-1][6]+=1;
         }
         props.push([props.length+1, propInfix, trans, undefined, undefined, tree,0,false]);
+        if (this.truthReplacement(props[props.length-1])) return true;
         if (this.isSolved()) return true;
         else return false;        
     }
@@ -802,7 +1000,7 @@ var BackwardsSolver = {
         console.log("\n**********Building Conclusion Array**********");
 //IDEALLY SHOULD USE WHILE LOOP, BUT WILL USE 10 LOOPS FOR TESTING        
         for (var i=0; i<13;i++){
-            if (this.heuristic(i)) return true;
+            if (this.heuristic()) return true;
             if (concs.length>4000) break;
         }
         // Cleaner.removeZeros(concs);
@@ -834,8 +1032,8 @@ var BackwardsSolver = {
         }
         else if (trans[0]==="Simp."){
             var newTransProps=[];
-            var haveLeft=false;
-            var haveRight=false;
+            var haveLeft = (conc1[5].left.top==="TRUE")? true: false;
+            var haveRight = (conc1[5].right.top==="TRUE")? true: false;
             for (var i=0;i<props.length;i++){
                 if (haveLeft===false && Tree.compare(conc1[5].left,props[i][5])){
                     newTransProps.push(i+1);
@@ -860,7 +1058,7 @@ var BackwardsSolver = {
         return false;
     },
 
-    heuristic: function(count) {
+    heuristic: function() {
         //RULES IN HEURISTICAL ORDER, BRUTE FORCE
         var i;
         var concsLength = concs.length;
@@ -878,6 +1076,16 @@ var BackwardsSolver = {
                         if (this.addTransformedConc(new treeNode("v",new treeNode("*",root.left,root.right),new treeNode("*",new treeNode("~",undefined,root.left), new treeNode("~",undefined,root.right))), ["Truth Table Form",[concs[i][0]]])) return true;
                     }
                     else if (root.top==="v") {
+                        //Immediate Inferences
+                        if (root.right.top==="FALSE"){
+                            if (this.addTransformedConc(root.left, ["Immediate Inference",[concs[i][0]]])) return true;
+                        } else if (root.left.top==="FALSE"){
+                            if (this.addTransformedConc(root.right, ["Immediate Inference",[concs[i][0]]])) return true;
+                        }                        
+                        //Tautology
+                        if (Tree.compare(root.left, root.right)){
+                            if (this.addTransformedConc(root.left, ["Tautology",[concs[i][0]]])) return true;                
+                        }
                         //DISTRIB
                         if (root.left.top==="*" && root.right.top==="*") {
                             if (Tree.compare(root.left.left,root.right.left)){
@@ -936,6 +1144,16 @@ var BackwardsSolver = {
                         }
                     }
                     else if (root.top==="*"){
+                        //Immediate Inferences
+                        if (root.right.top==="TRUE"){
+                            if (this.addTransformedConc(root.left, ["Immediate Inference",[concs[i][0]]])) return true;
+                        } else if (root.left.top==="TRUE"){
+                            if (this.addTransformedConc(root.right, ["Immediate Inference",[concs[i][0]]])) return true;
+                        }
+                        //Tautology
+                        if (Tree.compare(root.left, root.right)){
+                            if (this.addTransformedConc(root.left, ["Tautology",[concs[i][0]]])) return true;                
+                        }
                         //SIMP
                         if (this.addTransformedConc(root.left, ["Simp.",[concs[i][0]]])) return true;
                         if (this.addTransformedConc(root.right, ["Simp.",[concs[i][0]]])) return true;
@@ -968,6 +1186,12 @@ var BackwardsSolver = {
                         }                
                     }
                     else if (root.top===">"){
+                        //Immediate Inferences
+                        if (root.left.top==="TRUE"){
+                            if (this.addTransformedConc(root.right, ["Immediate Inference",[concs[i][0]]])) return true;
+                        } else if (root.right.top==="FALSE"){
+                            if (this.addTransformedConc(new treeNode("~",undefined,root.left), ["Immediate Inference",[concs[i][0]]])) return true;
+                        }
                         //EXP
                         if (root.left.top==="*"){
                             if (this.addTransformedConc(new treeNode(">",root.left.left,new treeNode(">",root.left.right,root.right)), ["Exp.",[concs[i][0]]])) return true;
@@ -1019,6 +1243,40 @@ var BackwardsSolver = {
         return false;
     },
 
+    truthReplacement: function(conc){
+        var result=[];
+        var root=conc[5];
+        //TOP ACTION
+        if (isOperand(root.top)) return false;
+        if (root.top==="*"){
+            if (Tree.compare(new treeNode("~",undefined,root.left),root.right) || Tree.compare(root.left,new treeNode("~",undefined,root.right))){
+                prop[7]=true;
+                if (this.addTransformedConc(new treeNode("FALSE"), ["Consistency",[conc[0]]])) return true;                
+            }
+        }
+        if (root.top==="v"){
+            if (Tree.compare(new treeNode("~",undefined,root.left),root.right) || Tree.compare(root.left,new treeNode("~",undefined,root.right))){
+                conc[7]=true;        
+                if (this.addTransformedConc(new treeNode("TRUE"), ["Exluded Middle",[conc[0]]])) return true;
+            }
+        }
+        //START RECURSIVE LEFT
+        if (root.top!=="~"){            
+            result = Solver.truthReplacementRecursive(root.left, []);
+            for (x=0;x<result.length;x++){
+                conc[7]=true;
+                if (this.addTransformedConc(new treeNode(root.top, result[x][1], root.right), [result[x][0],[conc[0]]]))  return true;
+            }
+        }
+        //START RECURSIVE RIGHT
+        result = Solver.truthReplacementRecursive(root.right, []);
+        for (x=0;x<result.length;x++){
+            conc[7]=true;
+            if (this.addTransformedConc(new treeNode(root.top, root.left, result[x][1]), [result[x][0],[conc[0]]]))  return true;
+        }
+        return false;
+    },
+
     inferenceRules: function(conc){
         var root=conc[5];
         if (root.top===undefined || isOperand(root.top)) return false;
@@ -1026,16 +1284,16 @@ var BackwardsSolver = {
             if (conc[0]===concs[i][0]){}
             else if (root.top==="v"){
                 if (Tree.compare(new treeNode("~",undefined,root.right),concs[i][5]) || Tree.compare(root.right,new treeNode("~",undefined,concs[i][5]))) {
-                    if (this.addTransformedConc(root.left, ["DS",[root[0],concs[i][0]]])) return true;
+                    if (this.addTransformedConc(root.left, ["DS",[conc[0],concs[i][0]]])) return true;
                 } else if (Tree.compare(new treeNode("~",undefined,root.left),concs[i][5]) || Tree.compare(root.left,new treeNode("~",undefined,concs[i][5]))) {
-                    if (this.addTransformedConc(root.right, ["DS",[root[0],concs[i][0]]])) return true;
+                    if (this.addTransformedConc(root.right, ["DS",[conc[0],concs[i][0]]])) return true;
                 }
             } else if (root.top===">"){
                 if (Tree.compare(root.left,concs[i][5])){
-                    if (this.addTransformedConc(root.right, ["MP",[root[0],concs[i][0]]])) return true;
+                    if (this.addTransformedConc(root.right, ["MP",[conc[0],concs[i][0]]])) return true;
                 }
                 if (Tree.compare(new treeNode("~",undefined,root.right),concs[i][5]) || Tree.compare(root.right,new treeNode("~",undefined,concs[i][5]))) {
-                    if (this.addTransformedConc(new treeNode("~",undefined,root.left), ["MT",[root[0],concs[i][0]]])) return true;        
+                    if (this.addTransformedConc(new treeNode("~",undefined,root.left), ["MT",[conc[0],concs[i][0]]])) return true;        
                 }
             }
         } 
@@ -1116,21 +1374,6 @@ var BackwardsSolver = {
         return result;
     },
 
-    removeDN: function(conc){
-        if (conc.top===undefined || isOperand(conc.top)) return conc;
-        if (conc.top==="~" && conc.right.top==="~"){
-            // console.log("removing: Double Negative on: "+Tree.treeToInfix(conc));
-            conc = conc.right.right;
-            if (conc.top===undefined || isOperand(conc.top)) return conc;
-        }
-        if (conc.top!=="~"){
-            conc.left = this.removeDN(conc.left);
-            if (conc.top===undefined || isOperand(conc.top)) return conc;
-        }
-        conc.right = this.removeDN(conc.right);
-        return conc;
-    },
-
     aDd: function(conc){
         var i;
         root = conc[5];
@@ -1182,14 +1425,8 @@ var BackwardsSolver = {
     },
 
     addTransformedConc: function(tree, trans) {
-        // console.log("Successfully applied rule: "+trans[0]);
-        tree = this.removeDN(tree);
-        if (tree.top==="v" || tree.top==="*"){
-            if (Tree.compare(tree.left, tree.right)){
-                console.log("Removed tautology: "+Tree.treeToInfix(tree)+" from: \""+trans[0]+"\" on "+trans[1]);
-                tree = tree.left;
-            }
-        }
+        tree = Solver.removeDN(tree);
+        tree = Solver.convertNonTruth(tree);
         var concInfix = Tree.treeToInfix(tree);
         if (concInfix.length>27) return false;
         if ((concInfix.split("~").length-1)>4) return false;        
@@ -1202,6 +1439,7 @@ var BackwardsSolver = {
             console.log("Added Conc using "+trans[0]+": "+concs[trans[1][0]-1][1]+" -> "+concInfix);
         }
         concs.push([concs.length+1,concInfix,trans,undefined,undefined,tree,0,false,undefined]);
+        if (this.truthReplacement(concs[concs.length-1])) return true;        
         // if (this.isSolved()) return true;
         return false;
     }
@@ -1237,7 +1475,7 @@ var Cleaner = {
         var newProps = [];
         var i;
         for (i=0;i<propsUsed.length;i++){
-            var transIndex = props[propsUsed[i]-1][2][1];
+            var transIndex = props[propsUsed[i]-1][2][1].slice();
             if (transIndex.length===2){
                 if (transIndex[0]>transIndex[1]){
                     props[propsUsed[i]-1][2][1][1]=transIndex[0];
@@ -1246,21 +1484,21 @@ var Cleaner = {
             }
             newProps.push(props[propsUsed[i]-1]);
         }
-        props = newProps;
+        finalProps = newProps;
         //RECALIBRATE NUMBERS
         var currentProp=1;
-        for (i=0;i<props.length;i++){
-            var numToChange = props[i][0];
-            for (var j=0;j<props.length;j++){
-                for (var l=0;l<props[j][2][1].length;l++){
-                    if (props[j][2][0]!=="Given Proposition"){
-                        if (props[j][2][1][l]==numToChange){
-                            props[j][2][1][l]=currentProp;
+        for (i=0;i<finalProps.length;i++){
+            var numToChange = finalProps[i][0];
+            for (var j=0;j<finalProps.length;j++){
+                for (var l=0;l<finalProps[j][2][1].length;l++){
+                    if (finalProps[j][2][0]!=="Given Proposition"){
+                        if (finalProps[j][2][1][l]==numToChange){
+                            finalProps[j][2][1][l]=currentProp;
                         }
                     }
                 }
             }
-            props[i][0]=currentProp;
+            finalProps[i][0]=currentProp;
             currentProp++;
         }
         return;
@@ -1345,6 +1583,7 @@ var Postfix = {
                 stackArr.push(pushVal);
             }
         }
+        console.log("");
         return(stackArr[0]);
     }
 };
@@ -1354,12 +1593,12 @@ var Postfix = {
 *********************************/
 
 function treeNode(top,left,right) {
-    if (left===undefined && right===undefined){
-        this.top = top;
-        this.left = left;
-        this.right = right;
-    }
-    else if (top==="="){
+    this.top = top;
+    this.left = left;
+    this.right = right;
+    if (top==="~" && right==="TRUE") this.right="FALSE";
+    if (top==="~" && right==="FALSE") this.right="TRUE";
+    if (top==="="){
         if (typeof(left)==="object" && typeof(right)==="object"){
             if (left.top==="~" && right.top==="~"){
                 this.top = top;
@@ -1367,16 +1606,6 @@ function treeNode(top,left,right) {
                 this.right = right.right;                
             }
         }
-    }
-    else if (!Tree.compare(left,right)){
-        this.top = top;
-        this.left = left;
-        this.right = right;
-    }
-    else {
-        this.top = left.top;
-        this.left = left.left;
-        this.right = left.right;
     }
 }
 
@@ -1416,9 +1645,8 @@ var Tree = {
 
     treeToInfix: function(tree) {
         var infixArr = [];
-        if (tree===undefined) return "";
         if (isOperand(tree.top)) return tree.top;
-        if (tree.top !== "~") {
+        if (tree.top!=="~") {
             infixArr = infixArr.concat(this.treeToInfixRecursive(tree.left));
         }
         infixArr.push(tree.top);
