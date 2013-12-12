@@ -108,13 +108,13 @@ var givenProps = 0;
         var tbl = "";
         for (var i = 0; i < propArray.length; i++) {
             if (propArray[i][2][0]==="Given Proposition") {
-                tbl += "<li><table><tr><td>"+propArray[i][1]+"</td><td>"+propArray[i][2][0]+"</td></tr></table></li>";
+                tbl += "<li><div class='proof_item_1'>"+propArray[i][1]+"</div><div class='proof_item_2'>"+propArray[i][2][0]+"</div></li>";
             } else {
-                tbl += "<li><table><tr><td>"+propArray[i][1]+"</td><td>"+(propArray[i][2][1].join(", ")+" "+propArray[i][2][0])+"</td></tr></table></li>";
+                tbl += "<li><div class='proof_item_1'>"+propArray[i][1]+"</div><div class='proof_item_2'>"+(propArray[i][2][1].join(", ")+" "+propArray[i][2][0])+"</div></li>";
             }
         }
         if (concs.length!==0) {
-            tbl += "<li id='conclusionItem' type='A' value='3'><table><tr><td>"+concs[0][1]+"</td><td>"+concs[0][8]+" "+concs[0][2][0]+"</td></tr></table></li>";
+            tbl += "<li id='conclusionItem' type='A' value='3'><div class='proof_item_1'>"+concs[0][1]+"</div><div class='proof_item_2'>"+concs[0][8]+" "+concs[0][2][0]+"</div></li>";
         }
         console.log("Reconstructed Proof Table\n");
         return tbl;
@@ -133,10 +133,10 @@ var givenProps = 0;
         concs = [];
         givenProps = 0;
         $("proofList").innerHTML = 
-                "<li><table><tr><td>First premise</td><td>1. Given premise</td><td style='width:50px;text-align:center'>0</td></tr></table>"+
-                "<li><table><tr><td>Second premise</td><td>2. Given premise</td><td style='width:50px;text-align:center'>0</td></tr></table>"+
-                "<li><table><tr><td>Third premise</td><td>3. Given premise</td><td style='width:50px;text-align:center'>0</td></tr></table>"+
-                "<li id='conclusionItem' type='A' value='3'><table><tr><td>Conclusion</td><td>Given conclusion</td><td style='width:50px;text-align:center'>0</td></tr></table>";
+                "<li><div class='proof_item_1'>First premise</div><div class='proof_item_2'>1. Given premise</div></li>"+
+                "<li><div class='proof_item_1'>Second premise</div><div class='proof_item_2'>2. Given premise</div></li>"+
+                "<li><div class='proof_item_1'>Third premise</div><div class='proof_item_2'>3. Given premise</div></li>"+
+                "<li id='conclusionItem' type='A' value='3'><div class='proof_item_1'>Conclusion</div><div class='proof_item_2'>Given conclusion</div></li>";
         $("concForm").style.display = "block";
         $("solveForm").style.display = "none";
         $("submitSolve").value = "Solve";

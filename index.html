@@ -51,7 +51,8 @@
 						<td><input type="button" value="3" class="submit" id="fq3"></td>
 						<td><input type="button" value="4" class="submit" id="fq4"></td>
 						<td><input type="button" value="5" class="submit" id="fq5"></td>
-					</tr><tr>
+					</tr>
+					<tr>
 						<td><input type="button" value="6" class="submit" id="fq6"></td>
 						<td><input type="button" value="7" class="submit" id="fq7"></td>
 						<td><input type="button" value="8" class="submit" id="fq8"></td>
@@ -66,11 +67,11 @@
 			<div >
 				<fieldset><legend>Logical Proof</legend>
 					<table style="width:100%;padding-left:40px"><tr><th>Propositions</th><th>Transformation Rules</th></tr></table>
-					<ol id="proofList" style="display:inline-block">
-						<li><table><tr><td>First premise</td><td>1. Given premise</td></tr></table>
-						<li><table><tr><td>Second premise</td><td>2. Given premise</td></tr></table>
-						<li><table><tr><td>Third premise</td><td>3. Given premise</td></tr></table>
-						<li id="conclusionItem" type="A" value="3"><table><tr><td>Conclusion</td><td>Given conclusion</td></tr></table>
+					<ol id="proofList">
+						<li><div class="proof_item_1">First premise</div><div class="proof_item_2">1. Given premise</div></li>
+						<li><div class="proof_item_1">Second premise</div><div class="proof_item_2">2. Given premise</div></li>
+						<li><div class="proof_item_1">Third premise</div><div class="proof_item_2">3. Given premise</div></li>
+						<li id="conclusionItem" type="A" value="3"><div class="proof_item_1">Conclusion</div><div class="proof_item_2">Given conclusion</div></li>
 					</ol>		
 				</fieldset>
 			</div>

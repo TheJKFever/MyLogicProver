@@ -74,18 +74,39 @@ input[type="button"]{
 	width:100%;
 }
 
+
+.proof_item_1{
+	display: inline-block;
+	width: calc(50% - 7px);
+	padding: 4px 2px;
+	border: solid 1px #BFBD9F;
+	margin:0 0 1px 0;
+}
+
+.proof_item_2{
+	width: calc(50% - 7px);
+	padding: 4px 2px;
+	border: solid 1px #BFBD9F;
+	display: inline-block;
+	border-spacing: 2px;
+	margin:0 0 0 1px;
+}
+
 ol {
 	margin-top: 0;
 }
 
 ol table {
-	display:inline-block;
+	width:100%;
 }
 
-ol li table tr td{
+ol li table td{
+	width:50%;
 	padding:4px 2px;
 	border:solid 1px #BFBD9F;
 }
+
+
 
 .submit{
 	width:34%;
@@ -126,17 +147,6 @@ th {
 	text-align: center;
 	background-color: #C2E078;
 	color: #FFFFFF;
-}
-#truthTable{
-	text-align: center;
-	float:right
-}
-
-#truthTableCol{
-	width: -moz-calc(100% - 36px);
-	width: -webkit-calc(100% - 36px);
-	width: -o-calc(100% - 36px);
-	width: calc(100% - 36px);
 }
 
 .ColumnDiv {
