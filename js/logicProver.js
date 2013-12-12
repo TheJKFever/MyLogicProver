@@ -362,6 +362,11 @@ var Solver = {
                     }
                     else if (root.top==="v") {
                         //Immediate Inferences
+                        if (root.right.top==="TRUE"){
+                            if (this.addTransformedProp(root.right, ["Immediate Inference",[props[i][0]]])) return true;
+                        } else if (root.left.top==="TRUE"){
+                            if (this.addTransformedProp(root.left, ["Immediate Inference",[props[i][0]]])) return true;
+                        }
                         if (root.right.top==="FALSE"){
                             if (this.addTransformedProp(root.left, ["Immediate Inference",[props[i][0]]])) return true;
                         } else if (root.left.top==="FALSE"){
@@ -536,6 +541,11 @@ var Solver = {
             result.push(["Truth Table Form",new treeNode("v",new treeNode("*",prop.left,prop.right),new treeNode("*",new treeNode("~",undefined,prop.left), new treeNode("~",undefined,prop.right)))]);
         } else if (prop.top==="v") {
             //Immediate Inferences
+            if (prop.right.top==="TRUE"){
+                result.push(["Immediate Inference",prop.right]);
+            } else if (prop.left.top==="TRUE"){
+                result.push(["Immediate Inference",prop.left]);
+            }                        
             if (prop.right.top==="FALSE"){
                 result.push(["Immediate Inference",prop.left]);
             } else if (prop.left.top==="FALSE"){
@@ -776,16 +786,16 @@ var Solver = {
         var root=prop[5];
         if (isOperand(root.top)) return false;
         //TOP ACTION
-        // if (root.top==="*"){
-        //     if (Tree.compare(new treeNode("~",undefined,root.left),root.right) || Tree.compare(root.left,new treeNode("~",undefined,root.right))){
-        //         prop[7]=true;
-        //         if (this.addTransformedProp(new treeNode("FALSE"), ["Consistency",[prop[0]]])) return true;                
-        //     }
-        // }
+        if (root.top==="*"){
+            if (Tree.compare(new treeNode("~",undefined,root.left),root.right) || Tree.compare(root.left,new treeNode("~",undefined,root.right))){
+                prop[7]=true;
+                if (this.addTransformedProp(new treeNode("FALSE"), ["Consistency",[prop[0]]])) return true;                
+            }
+        }
         if (root.top==="v"){
             if (Tree.compare(new treeNode("~",undefined,root.left),root.right) || Tree.compare(root.left,new treeNode("~",undefined,root.right))){
                 prop[7]=true;
-                if (this.addTransformedProp(new treeNode("TRUE"), ["Exluded Middle",[prop[0]]])) return true;                                            
+                if (this.addTransformedProp(new treeNode("TRUE"), ["Excluded Middle",[prop[0]]])) return true;                                            
             }
         }
         //START RECURSIVE LEFT
@@ -810,14 +820,14 @@ var Solver = {
         var x;
         if (tree.top===undefined || isOperand(tree.top)) return result;
         //RECURSIVE ACTION
-        // if (tree.top==="*"){
-        //     if (Tree.compare(new treeNode("~",undefined,tree.left),tree.right) || Tree.compare(tree.left,new treeNode("~",undefined,tree.right))){
-        //         result.push(["Consistency",new treeNode("FALSE")]);              
-        //     }
-        // }
+        if (tree.top==="*"){
+            if (Tree.compare(new treeNode("~",undefined,tree.left),tree.right) || Tree.compare(tree.left,new treeNode("~",undefined,tree.right))){
+                result.push(["Consistency",new treeNode("FALSE")]);              
+            }
+        }
         if (tree.top==="v"){
             if (Tree.compare(new treeNode("~",undefined,tree.left),tree.right) || Tree.compare(tree.left,new treeNode("~",undefined,tree.right))){
-                result.push(["Exluded Middle",new treeNode("TRUE")]);                                            
+                result.push(["Excluded Middle",new treeNode("TRUE")]);                                            
             }
         }
         //CONTINUE RECURSIVE LEFT
@@ -880,29 +890,6 @@ var Solver = {
                     if (Tree.compare(root.left,props[i][5].right)) {
                         if (this.addTransformedProp(new treeNode(">",props[i][5].left,root.right), ["HS",[prop[0],props[i][0]]])) return true;
                     }
-
-                    //Searches for 3 props to conjoing for Constructive Dilema
-                    // for (var j=0;j<props.length;j++){
-                    //     if (prop[2][1][0]!==props[j][0]){
-                    //         if (props[j][5].top==="v"){
-                    //             if (Tree.compare(props[j][5].left,root.left)){
-                    //                 if (Tree.compare(props[j][5].right,props[i][5].left)){
-                    //                     if (this.addTransformedProp(new treeNode("*", root, props[i][5]), ["Conj.",[prop[0],props[i][0]]])) return true;
-                    //                     if (props[props.length-1][2]===["Conj.",[prop[0],props[i][0]]]) {
-                    //                         if (this.addTransformedProp(new treeNode("v", root.right, props[i][5].right), ["CD",[props[props.length-1][0],props[j][0]]])) return true;
-                    //                     }
-                    //                 }                                
-                    //             } else if (Tree.compare(props[j][5].left,props[i][5].left)){
-                    //                 if (Tree.compare(props[j][5].right,root.left)){
-                    //                     if (this.addTransformedProp(new treeNode("*", root, props[i][5]), ["Conj.",[prop[0],props[i][0]]])) return true;
-                    //                     if (props[props.length-1][2]===["Conj.",[prop[0],props[i][0]]]) {
-                    //                         if (this.addTransformedProp(new treeNode("v", root.right, props[i][5].right), ["CD",[props[props.length-1][0],props[j][0]]])) return true;
-                    //                     }
-                    //                 }
-                    //             }
-                    //         }
-                    //     }
-                    // }
                 }
             }
         } 
@@ -939,18 +926,18 @@ var Solver = {
     },
 //END INFERENCE RULES
 //SEPCIAL DISJUNCT RULE
-    allOperatorsAreDisjuncts: function(tree){
-        if (isOperand(tree.top)) return true;
-        else if (tree.top==="~"){
-            if (isOperand(tree.right.top)) return true;
-        } 
-        else if (tree.top==="v"){
-            if (!allOperatorsAreDisjuncts(tree.left)) return false;
-            if (!allOperatorsAreDisjuncts(tree.right)) return false;
-        } 
-        else return false;
-        return true;
-    },
+    // allOperatorsAreDisjuncts: function(tree){
+    //     if (isOperand(tree.top)) return true;
+    //     else if (tree.top==="~"){
+    //         if (isOperand(tree.right.top)) return true;
+    //     } 
+    //     else if (tree.top==="v"){
+    //         if (!allOperatorsAreDisjuncts(tree.left)) return false;
+    //         if (!allOperatorsAreDisjuncts(tree.right)) return false;
+    //     } 
+    //     else return false;
+    //     return true;
+    // },
 
     isSolved: function(){
         var newlyAddedProp = props[props.length-1];
@@ -994,8 +981,8 @@ var Solver = {
             props[trans[1][0]-1][6]+=1;
         }
         props.push([props.length+1, propInfix, trans, undefined, undefined, tree,0,false]);
-        if (this.truthReplacement(props[props.length-1])) return true;
         if (this.isSolved()) return true;
+        if (this.truthReplacement(props[props.length-1])) return true;
         else return false;        
     }
 
@@ -1019,7 +1006,7 @@ var BackwardsSolver = {
 
     solved: function(trans){
         if (trans[0]==="Given Conclusion") return true;
-        var conc1 = concs[trans[1][0]-1].slice(); //Retrieve conclusion1 and store in conc1
+        var conc1 = concs[trans[1][0]-1].slice(); //Retrieve next conclusion1 and store in conc1
         var newTrans = conc1[2].slice();
         if (trans[0]==="MP"){
             Solver.addTransformedProp(new treeNode("v",conc1[5].right,new treeNode("~",undefined,conc1[5].left)),["Add.",[props[props.length-1][0]]]);
@@ -1087,6 +1074,11 @@ var BackwardsSolver = {
                     }
                     else if (root.top==="v") {
                         //Immediate Inferences
+                        if (root.right.top==="TRUE"){
+                            if (this.addTransformedConc(root.right, ["Immediate Inference",[concs[i][0]]])) return true;
+                        } else if (root.left.top==="TRUE"){
+                            if (this.addTransformedConc(root.left, ["Immediate Inference",[concs[i][0]]])) return true;
+                        }                        
                         if (root.right.top==="FALSE"){
                             if (this.addTransformedConc(root.left, ["Immediate Inference",[concs[i][0]]])) return true;
                         } else if (root.left.top==="FALSE"){
@@ -1265,7 +1257,7 @@ var BackwardsSolver = {
         if (root.top==="v"){
             if (Tree.compare(new treeNode("~",undefined,root.left),root.right) || Tree.compare(root.left,new treeNode("~",undefined,root.right))){
                 conc[7]=true;        
-                if (this.addTransformedConc(new treeNode("TRUE"), ["Exluded Middle",[conc[0]]])) return true;
+                if (this.addTransformedConc(new treeNode("TRUE"), ["Excluded Middle",[conc[0]]])) return true;
             }
         }
         //START RECURSIVE LEFT
