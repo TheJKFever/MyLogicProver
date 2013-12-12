@@ -108,13 +108,13 @@ var givenProps = 0;
         var tbl = "";
         for (var i = 0; i < propArray.length; i++) {
             if (propArray[i][2][0]==="Given Proposition") {
-                tbl += "<li><table><tr><td>"+propArray[i][1]+"</td><td>"+propArray[i][2][0]+"</td><td style='width:50px;text-align:center'>"+propArray[i][6]+"</td></tr></table></li>";
+                tbl += "<li><table><tr><td>"+propArray[i][1]+"</td><td>"+propArray[i][2][0]+"</td></tr></table></li>";
             } else {
-                tbl += "<li><table><tr><td>"+propArray[i][1]+"</td><td>"+(propArray[i][2][1].join(", ")+" "+propArray[i][2][0])+"</td><td style='width:50px;text-align:center'>"+propArray[i][6]+"</td></tr></table></li>";
+                tbl += "<li><table><tr><td>"+propArray[i][1]+"</td><td>"+(propArray[i][2][1].join(", ")+" "+propArray[i][2][0])+"</td></tr></table></li>";
             }
         }
         if (concs.length!==0) {
-            tbl += "<li id='conclusionItem' type='A' value='3'><table><tr><td>"+concs[0][1]+"</td><td>"+concs[0][8]+" "+concs[0][2][0]+"</td><td style='width:50px;text-align:center'>"+concs[0][6]+"</td></tr></table></li>";
+            tbl += "<li id='conclusionItem' type='A' value='3'><table><tr><td>"+concs[0][1]+"</td><td>"+concs[0][8]+" "+concs[0][2][0]+"</td></tr></table></li>";
         }
         console.log("Reconstructed Proof Table\n");
         return tbl;
@@ -776,12 +776,12 @@ var Solver = {
         var root=prop[5];
         if (isOperand(root.top)) return false;
         //TOP ACTION
-        if (root.top==="*"){
-            if (Tree.compare(new treeNode("~",undefined,root.left),root.right) || Tree.compare(root.left,new treeNode("~",undefined,root.right))){
-                prop[7]=true;
-                if (this.addTransformedProp(new treeNode("FALSE"), ["Consistency",[prop[0]]])) return true;                
-            }
-        }
+        // if (root.top==="*"){
+        //     if (Tree.compare(new treeNode("~",undefined,root.left),root.right) || Tree.compare(root.left,new treeNode("~",undefined,root.right))){
+        //         prop[7]=true;
+        //         if (this.addTransformedProp(new treeNode("FALSE"), ["Consistency",[prop[0]]])) return true;                
+        //     }
+        // }
         if (root.top==="v"){
             if (Tree.compare(new treeNode("~",undefined,root.left),root.right) || Tree.compare(root.left,new treeNode("~",undefined,root.right))){
                 prop[7]=true;
@@ -810,11 +810,11 @@ var Solver = {
         var x;
         if (tree.top===undefined || isOperand(tree.top)) return result;
         //RECURSIVE ACTION
-        if (tree.top==="*"){
-            if (Tree.compare(new treeNode("~",undefined,tree.left),tree.right) || Tree.compare(tree.left,new treeNode("~",undefined,tree.right))){
-                result.push(["Consistency",new treeNode("FALSE")]);              
-            }
-        }
+        // if (tree.top==="*"){
+        //     if (Tree.compare(new treeNode("~",undefined,tree.left),tree.right) || Tree.compare(tree.left,new treeNode("~",undefined,tree.right))){
+        //         result.push(["Consistency",new treeNode("FALSE")]);              
+        //     }
+        // }
         if (tree.top==="v"){
             if (Tree.compare(new treeNode("~",undefined,tree.left),tree.right) || Tree.compare(tree.left,new treeNode("~",undefined,tree.right))){
                 result.push(["Exluded Middle",new treeNode("TRUE")]);                                            

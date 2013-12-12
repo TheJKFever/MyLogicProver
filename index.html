@@ -10,19 +10,6 @@
 <body>
 	<div id="container">
 		<h1>My Logic Prover 1.5 Beta</h1>
-		<div class="ColumnDiv" id="proofDiv" style="float:left">
-			<div >
-				<fieldset><legend>Logical Proof</legend>
-					<table style="float:right;"><tr><th>Propositions</th><th>Transformation Rules</th><th style="width:50px">Used Count</th></tr></table>
-					<ol id="proofList">
-						<li><table><tr><td>First premise</td><td>1. Given premise</td><td style="width:50px;text-align:center">0</td></tr></table>
-						<li><table><tr><td>Second premise</td><td>2. Given premise</td><td style="width:50px;text-align:center">0</td></tr></table>
-						<li><table><tr><td>Third premise</td><td>3. Given premise</td><td style="width:50px;text-align:center">0</td></tr></table>
-						<li id="conclusionItem" type="A" value="3"><table><tr><td>Conclusion</td><td>Given conclusion</td><td style="width:50px;text-align:center">0</td></tr></table>
-					</ol>		
-				</fieldset>
-			</div>
-		</div>
 		<div class="ColumnDiv" id="propositionsDiv">
 			<form action="#" method="get" id="premForm">
 				<fieldset><legend>Given Premises</legend>
@@ -74,6 +61,19 @@
 					</div>
 				</fieldset>
 			</form>
+		</div>
+		<div class="ColumnDiv" id="proofDiv" style="float:left">
+			<div >
+				<fieldset><legend>Logical Proof</legend>
+					<table style="width:100%;padding-left:40px"><tr><th>Propositions</th><th>Transformation Rules</th></tr></table>
+					<ol id="proofList" style="display:inline-block">
+						<li><table><tr><td>First premise</td><td>1. Given premise</td></tr></table>
+						<li><table><tr><td>Second premise</td><td>2. Given premise</td></tr></table>
+						<li><table><tr><td>Third premise</td><td>3. Given premise</td></tr></table>
+						<li id="conclusionItem" type="A" value="3"><table><tr><td>Conclusion</td><td>Given conclusion</td></tr></table>
+					</ol>		
+				</fieldset>
+			</div>
 		</div>
 	</div>
 </body> 

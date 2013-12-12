@@ -1,5 +1,5 @@
 #container{
-	width: 1080px;
+	width: 1000px;
 	margin: 0 auto;
 	display: block;
 }
@@ -34,7 +34,7 @@ p{
 
 div {
 	margin: 2px;
-	display: inline-block;
+	display: block;
 
 }
 label{
@@ -67,7 +67,7 @@ input{
 	font-size:12px;
 	padding:4px 2px;
 	border:solid 1px #BFBD9F;
-	width:300px;
+	width:62%;
 	margin:2px 2px 2px 2px;
 }
 
@@ -85,7 +85,7 @@ ol li table tr td{
 }
 
 .submit{
-	width:150px;
+	width:34%;
 	background:#F1F2D8;
 	text-align:center;
 	color:#000000;
@@ -115,7 +115,7 @@ table{
 }
 
 th, td{
-	width: 180px;
+	width: 262px;
 }
 
 th {
@@ -138,8 +138,22 @@ th {
 
 .ColumnDiv {
 	margin:2px;
-	width:500px;
+	width:46.5%;
 	padding:14px;
 	background-color: #ffffff;
 	border:solid 2px #425955;
+}
+
+/*Screen size too small for regular view*/
+@media screen and (max-width: 1000px) {
+	#propositionsDiv{
+		float:none;
+	}
+	.ColumnDiv {
+		width: 90%;
+	}
+	#container{
+		width: 70%;
+		min-width: 500px;
+	}
 }
