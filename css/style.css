@@ -70,6 +70,9 @@ input{
 	width:62%;
 	margin:2px 2px 2px 2px;
 }
+input[type="button"]{
+	width:100%;
+}
 
 ol {
 	margin-top: 0;
