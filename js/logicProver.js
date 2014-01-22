@@ -825,7 +825,7 @@ var Solver = {
                 result.push(["Consistency",new treeNode("FALSE")]);              
             }
         }
-        if (tree.top==="v"){
+        else if (tree.top==="v"){
             if (Tree.compare(new treeNode("~",undefined,tree.left),tree.right) || Tree.compare(tree.left,new treeNode("~",undefined,tree.right))){
                 result.push(["Excluded Middle",new treeNode("TRUE")]);                                            
             }
@@ -1254,7 +1254,7 @@ var BackwardsSolver = {
                 if (this.addTransformedConc(new treeNode("FALSE"), ["Consistency",[conc[0]]])) return true;                
             }
         }
-        if (root.top==="v"){
+        else if (root.top==="v"){
             if (Tree.compare(new treeNode("~",undefined,root.left),root.right) || Tree.compare(root.left,new treeNode("~",undefined,root.right))){
                 conc[7]=true;        
                 if (this.addTransformedConc(new treeNode("TRUE"), ["Excluded Middle",[conc[0]]])) return true;
