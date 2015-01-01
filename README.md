@@ -1,0 +1,4 @@
+MyLogicProver
+=============
+
+Automated Logical Proofs
