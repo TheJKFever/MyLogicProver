@@ -186,20 +186,20 @@ interface Proposition {
         $("#premForm").on('submit', addProp);
         $("#concForm").on('submit', addConc);
         $("#solveForm").on('submit', solve);
-        $("#fq1").on('click', examQuestion1);
-        $("#fq2").on('click', examQuestion2);
-        $("#fq3").on('click', examQuestion3);
-        $("#fq4").on('click', examQuestion4);
-        $("#fq5").on('click', examQuestion5);
-        $("#fq6").on('click', examQuestion6);
-        $("#fq7").on('click', examQuestion7);
-        $("#fq8").on('click', examQuestion8);
-        $("#fq9").on('click', examQuestion9);
-        $("#fq10").on('click', examQuestion10);
+        $("#fq1").on('click', sampleQuestion1);
+        $("#fq2").on('click', sampleQuestion2);
+        $("#fq3").on('click', sampleQuestion3);
+        $("#fq4").on('click', sampleQuestion4);
+        $("#fq5").on('click', sampleQuestion5);
+        $("#fq6").on('click', sampleQuestion6);
+        $("#fq7").on('click', sampleQuestion7);
+        $("#fq8").on('click', sampleQuestion8);
+        $("#fq9").on('click', sampleQuestion9);
+        $("#fq10").on('click', sampleQuestion10);
     }
 
-/*************** EXAM QUESTIONS ***************/
-    function examQuestion1() {
+/*************** SAMPLE QUESTIONS ***************/
+    function sampleQuestion1() {
         resetProof();
         addProp("A>(~B*C)");
         addProp("Dv~E");
@@ -207,13 +207,13 @@ interface Proposition {
         addConc("B>D");
         return false;
     }
-    function examQuestion2() {
+    function sampleQuestion2() {
         resetProof();
         addProp("B>((AvC)>F)");
         addProp("(FvD)>E");
         addConc("B>(C>E)");
     }
-    function examQuestion3() {
+    function sampleQuestion3() {
         resetProof();
         addProp("~(H*~(AvB))");
         addProp("~(AvD)");
@@ -221,43 +221,43 @@ interface Proposition {
         addConc("~(~E*~B)v~(CvH)");
 
     }
-    function examQuestion4() {
+    function sampleQuestion4() {
         resetProof();
         addProp("A>(BvC)");
         addProp("(B>D)*(C>E)");
         addConc("A>(DvE)");
     }
-    function examQuestion5() {
+    function sampleQuestion5() {
         resetProof();
         addProp("E>B");
         addProp("BvC");
         addProp("C=D");
         addConc("EvD");
     }
-    function examQuestion6() {
+    function sampleQuestion6() {
         resetProof();
         addProp("(A>B)>B");
         addConc("(B>A)>A");
     }
-    function examQuestion7() {
+    function sampleQuestion7() {
         resetProof();
         addProp("Av(~B*C)");
         addProp("B>~A");
         addConc("~B");
     }
-    function examQuestion8() {
+    function sampleQuestion8() {
         resetProof();
         addProp("A>(B>C)");
         addConc("(A>B)>(A>C)");
     }
-    function examQuestion9() {
+    function sampleQuestion9() {
         resetProof();
         addProp("Av(B>D)");
         addProp("B>~E");
         addProp("B*(E=D)");
         addConc("B>(AvC)");
     }
-    function examQuestion10() {
+    function sampleQuestion10() {
         resetProof();
         addProp("G=(Av(~Bv~C))");
         addProp("(Av~B)>D");
