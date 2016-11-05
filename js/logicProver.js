@@ -152,6 +152,7 @@ var OPERATORS = ["~", "*", "v", ">", "=", "¬"];
         $("#solveForm").hide();
         $("#submitSolve").val("Solve");
         $("#solveForm").off('submit', resetProof);
+        $("#solveForm").off('submit', solve);
         $("#solveForm").on('submit', solve);
         return false;
     }
@@ -163,7 +164,6 @@ var OPERATORS = ["~", "*", "v", ">", "=", "¬"];
             alert("This argument is not valid");
             return false;
         }
-        console.log("Why'd you get here");
         if (Solver.solve()) {
             Cleaner.cleanup();
         }
