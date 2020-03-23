@@ -1,6 +1,7 @@
 # MyLogicProver - Automated Logical Proofs #
 =============
-**MyLogicProver** is an inference enginer that using the rules of Aristotelian logic to prove a conclusion using a given set of premises. It will first determine if the conclusion is logically provable using only the set of premises. Then it then use a variad of artificial intelligence techniques such as a combination of forward and backward chaining, guided heuristics, and intelligent elimination to identify a short path of inference from the premises to the conclusion. All code is written in javascript.
+
+**MyLogicProver** is an inference engine that uses the rules of Aristotelian logic to prove a conclusion using a given set of premises. It first determines if the conclusion is logically provable using only the set of premises. Then it uses various artificial intelligence techniques such as a combination of forward and backward chaining, guided heuristics, and intelligent elimination to identify a short path of inference from the premises to the conclusion. All code is written in javascript.
 
 ### Future developments: ###
 * Currently, MyLogicProver is only able to take 8 variables for it's premises and conclusions. I would like to change this to be an unlimited number of variables. 
